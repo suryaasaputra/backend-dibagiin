@@ -1,0 +1,38 @@
+version: "3.7"
+
+services:
+  postgresDB:
+    container_name: postgresDB
+    image: postgres:latest
+    ports:
+      -  8082:5432
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - APP_DB_USER=docker
+      - APP_DB_PASS=docker
+      - APP_DB_NAME=dibagi_app
+    networks:
+      - dibagi-network
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d/
+  dibagiApp:
+    container_name: golangServer
+    image: suryaasaputra/dibagi:1.0
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgresDB
+    environment:
+      - DB_HOST=postgresDB
+      - DB_NAME=dibagi_app
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_PORT=5432
+      - SECRET_KEY=SeCReT
+    networks:
+      - dibagi-network
+
+networks:
+  dibagi-network:
+    name: dibagi-network
