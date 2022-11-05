@@ -17,23 +17,20 @@ func UploadToBucket(c *http.Request, key, id string) (string, error) {
 		storageClient *storage.Client
 		err           error
 	)
-	// credentials := os.Getenv("STORAGE_CREDENTIALS")
-	// jsonCredentials, _ := json.Marshal(credentials)
 	ctx := appengine.NewContext(c)
-	storageClient, err = storage.NewClient(ctx, option.WithCredentialsFile("/secret/dibagi-in-key"))
-	// storageClient, err = storage.NewClient(ctx, option.WithCredentialsJSON(jsonCredentials))
+	storageClient, err = storage.NewClient(ctx, option.WithCredentialsFile(config.BUCKET_SA_CR))
 	if err != nil {
 		return "", err
 	}
 
-	f, _, err := c.FormFile(key)
+	f, uploadedFile, err := c.FormFile(key)
 	if err != nil {
 		return "", err
 	}
 
 	defer f.Close()
 	currentTime := time.Now().Unix()
-	fileName := fmt.Sprintf("%d-%s", currentTime, id)
+	fileName := fmt.Sprintf("%d-%s-%s", currentTime, id, uploadedFile.Filename)
 
 	sw := storageClient.Bucket(config.BUCKET_NAME).Object(key + "/" + fileName).NewWriter(ctx)
 

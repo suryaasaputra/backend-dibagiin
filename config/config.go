@@ -21,4 +21,5 @@ var (
 
 	STORAGE_PATH = os.Getenv("STORAGE_PATH")
 	BUCKET_NAME  = os.Getenv("BUCKET_NAME")
+	BUCKET_SA_CR = os.Getenv("BUCKET_SA_CR")
 )
