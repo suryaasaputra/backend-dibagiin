@@ -2,11 +2,9 @@ package helpers
 
 import (
 	"dibagi/config"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"time"
 
 	"cloud.google.com/go/storage"
@@ -19,11 +17,11 @@ func UploadToBucket(c *http.Request, key, id string) (string, error) {
 		storageClient *storage.Client
 		err           error
 	)
-	credentials := os.Getenv("STORAGE_CREDENTIALS")
-	jsonCredentials, _ := json.Marshal(credentials)
+	// credentials := os.Getenv("STORAGE_CREDENTIALS")
+	// jsonCredentials, _ := json.Marshal(credentials)
 	ctx := appengine.NewContext(c)
-	// storageClient, err = storage.NewClient(ctx, option.WithCredentialsFile("dibagi-in-key.json")
-	storageClient, err = storage.NewClient(ctx, option.WithCredentialsJSON(jsonCredentials))
+	storageClient, err = storage.NewClient(ctx, option.WithCredentialsFile("/secret/dibagi-in-key"))
+	// storageClient, err = storage.NewClient(ctx, option.WithCredentialsJSON(jsonCredentials))
 	if err != nil {
 		return "", err
 	}
