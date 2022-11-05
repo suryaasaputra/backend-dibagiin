@@ -17,7 +17,10 @@ func NewController(userController *userController) Controller {
 }
 
 func (c Controller) HomeController(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{
-		"message": "welcome",
+	// ctx.JSON(http.StatusOK, gin.H{
+	// 	"message": "welcome",
+	// })
+	ctx.HTML(http.StatusOK, "index.html", gin.H{
+		"message": "this is index",
 	})
 }

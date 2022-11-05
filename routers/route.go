@@ -11,7 +11,7 @@ import (
 func StartServer(ctl controllers.Controller) error {
 
 	r := gin.Default()
-	// r.LoadHTMLGlob("*.html")
+	r.LoadHTMLGlob("*.html")
 	r.GET("/", ctl.HomeController)
 
 	//manual login
