@@ -224,7 +224,7 @@ func (u userController) CheckIsExist(ctx *gin.Context) {
 		result := u.UserRepository.GetUserByUserName(userName)
 		if result.UserName == userName {
 			response := helpers.GetResponse(true, http.StatusBadRequest, "Username Already Taken", nil)
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
+			ctx.JSON(http.StatusNoContent, response)
 			return
 		}
 		response := helpers.GetResponse(false, http.StatusOK, "Username Avaible", nil)
