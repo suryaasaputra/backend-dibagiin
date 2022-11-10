@@ -15,9 +15,11 @@ func main() {
 	}
 
 	userRepository := repository.NewUserRepository(db)
+	donationRepository := repository.NewDonationRepository(db)
 	userController := controllers.NewUserController(userRepository)
+	donationController := controllers.NewDonationController(donationRepository)
 
-	controller := controllers.NewController(userController)
+	controller := controllers.NewController(userController, donationController)
 
 	err = routers.StartServer(controller)
 	if err != nil {

@@ -7,12 +7,14 @@ import (
 )
 
 type Controller struct {
-	UserController *userController
+	UserController     *userController
+	DonationController *donationController
 }
 
-func NewController(userController *userController) Controller {
+func NewController(userController *userController, donationController *donationController) Controller {
 	return Controller{
-		UserController: userController,
+		UserController:     userController,
+		DonationController: donationController,
 	}
 }
 

@@ -28,7 +28,7 @@ func StartServer(ctl controllers.Controller) error {
 		userRouter.PUT("/:userName", ctl.UserController.Update)
 		userRouter.DELETE("/:userName", ctl.UserController.Delete)
 	}
-
+	r.POST("/donation", middlewares.Authentication(), ctl.DonationController.Create)
 	var PORT = os.Getenv("PORT")
 	if PORT == "" {
 		PORT = "8080"
