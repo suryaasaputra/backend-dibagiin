@@ -39,6 +39,13 @@ type CreateDonationResponse struct {
 	CreatedAt   *time.Time `json:"created_at"`
 }
 
+type GetDonationsResponse struct {
+	Donation
+	// CreateDonationResponse
+	Donator string `json:"donator"`
+	// UpdatedAt *time.Time `json:"updated_at"`
+}
+
 func (d *Donation) BeforeCreate(tx *gorm.DB) error {
 	_, err := govalidator.ValidateStruct(d)
 	if err != nil {

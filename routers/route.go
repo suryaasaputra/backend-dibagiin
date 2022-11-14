@@ -21,14 +21,19 @@ func StartServer(ctl controllers.Controller) error {
 	userRouter := r.Group("/user")
 	{
 		userRouter.GET("/:userName", ctl.UserController.GetUser)
-		userRouter.GET("/exists", ctl.UserController.CheckIsExist)
+		userRouter.GET("", ctl.UserController.CheckUser)
 		userRouter.Use(middlewares.Authentication())
 		userRouter.Use(middlewares.UserAuthorization())
 		userRouter.PATCH("/:userName/UpdateProfilPhoto", ctl.UserController.SetProfilePhoto)
 		userRouter.PUT("/:userName", ctl.UserController.Update)
 		userRouter.DELETE("/:userName", ctl.UserController.Delete)
 	}
-	r.POST("/donation", middlewares.Authentication(), ctl.DonationController.Create)
+	donationRouter := r.Group("/donation")
+	{
+		donationRouter.POST("", middlewares.Authentication(), ctl.DonationController.Create)
+		donationRouter.GET("", middlewares.Authentication(), ctl.DonationController.GetDonations)
+
+	}
 	var PORT = os.Getenv("PORT")
 	if PORT == "" {
 		PORT = "8080"

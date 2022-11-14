@@ -207,8 +207,10 @@ func (u userController) SetProfilePhoto(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
-func (u userController) CheckIsExist(ctx *gin.Context) {
+func (u userController) CheckUser(ctx *gin.Context) {
 	email := ctx.Query("email")
+	// id:= ctx.Query("id")
+	// u.UserRepository.GetUserById(id)
 	userName := ctx.Query("user_name")
 	if email == "" && userName == "" {
 		response := helpers.GetResponse(true, http.StatusBadRequest, "Email or Username empty", nil)

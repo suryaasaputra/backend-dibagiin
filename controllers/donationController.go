@@ -57,3 +57,28 @@ func (d donationController) Create(ctx *gin.Context) {
 	response := helpers.GetResponse(false, http.StatusOK, "Create Donation Success", resp)
 	ctx.JSON(http.StatusCreated, response)
 }
+
+func (d donationController) GetDonations(ctx *gin.Context) {
+	availableDonation := ctx.Query("available")
+
+	if availableDonation == "true" {
+		result, err := d.DonationRepository.GetAvailableDonations()
+		if err != nil {
+			response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
+			return
+		}
+		response := helpers.GetResponse(false, http.StatusOK, "List of Available Donations", result)
+		ctx.JSON(http.StatusOK, response)
+	} else {
+		result, err := d.DonationRepository.GetDonations()
+		if err != nil {
+			response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
+			return
+		}
+		response := helpers.GetResponse(false, http.StatusOK, "List of Donations", result)
+		ctx.JSON(http.StatusOK, response)
+	}
+
+}
