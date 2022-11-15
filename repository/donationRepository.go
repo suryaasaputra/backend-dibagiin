@@ -4,12 +4,16 @@ import (
 	"dibagi/models"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type IDonationRepository interface {
 	Create(models.Donation) (models.CreateDonationResponse, error)
 	GetDonations() ([]models.GetDonationsResponse, error)
+	GetDonationById(string) (models.GetDonationsResponse, error)
 	GetAvailableDonations() ([]models.GetDonationsResponse, error)
+	UpdateDonation(string, models.EditDonationRequest) (models.EditDonationResponse, error)
+	DeleteDonation(string) error
 }
 
 type DonationDb struct {
@@ -41,7 +45,7 @@ func (d DonationDb) Create(donation models.Donation) (models.CreateDonationRespo
 
 func (d DonationDb) GetDonations() ([]models.GetDonationsResponse, error) {
 	donations := []models.Donation{}
-	err := d.db.Find(&donations).Error
+	err := d.db.Preload("User").Find(&donations).Error
 	if err != nil {
 		return nil, err
 	}
@@ -50,14 +54,11 @@ func (d DonationDb) GetDonations() ([]models.GetDonationsResponse, error) {
 
 	for _, v := range donations {
 		response := models.GetDonationsResponse{}
-		user := models.User{}
 		response.Donation = v
-		donatorId := v.UserID
-		err := d.db.Where("id=?", donatorId).First(&user).Error
-		if err != nil {
-			return nil, err
-		}
-		response.Donator = user.FullName
+		response.Donator.ID = v.User.ID
+		response.Donator.UserName = v.User.UserName
+		response.Donator.FullName = v.User.FullName
+		response.Donator.PhoneNumber = v.User.PhoneNumber
 		donationList = append(donationList, response)
 
 	}
@@ -66,7 +67,7 @@ func (d DonationDb) GetDonations() ([]models.GetDonationsResponse, error) {
 }
 func (d DonationDb) GetAvailableDonations() ([]models.GetDonationsResponse, error) {
 	donations := []models.Donation{}
-	err := d.db.Where("status=?", "available").Find(&donations).Error
+	err := d.db.Where("status=?", "available").Preload("User").Find(&donations).Error
 	if err != nil {
 		return nil, err
 	}
@@ -75,17 +76,68 @@ func (d DonationDb) GetAvailableDonations() ([]models.GetDonationsResponse, erro
 
 	for _, v := range donations {
 		response := models.GetDonationsResponse{}
-		user := models.User{}
 		response.Donation = v
-		donatorId := v.UserID
-		err := d.db.Where("id=?", donatorId).First(&user).Error
-		if err != nil {
-			return nil, err
-		}
-		response.Donator = user.FullName
+		response.Donator.ID = v.User.ID
+		response.Donator.UserName = v.User.UserName
+		response.Donator.FullName = v.User.FullName
 		donationList = append(donationList, response)
-
 	}
-
 	return donationList, nil
+}
+
+func (d DonationDb) GetDonationById(id string) (models.GetDonationsResponse, error) {
+	donation := models.Donation{}
+	err := d.db.Where("id=?", id).Preload("User").First(&donation).Error
+	if err != nil {
+		return models.GetDonationsResponse{}, err
+	}
+	var donator = struct {
+		ID          string `json:"id"`
+		UserName    string `json:"user_name"`
+		FullName    string `json:"full_name"`
+		PhoneNumber string `json:"phone_number"`
+	}{}
+	donator.ID = donation.User.ID
+	donator.UserName = donation.User.UserName
+	donator.FullName = donation.User.FullName
+	donator.PhoneNumber = donation.User.PhoneNumber
+	result := models.GetDonationsResponse{
+		Donation: donation,
+		Donator:  donator,
+	}
+	return result, nil
+}
+
+func (d DonationDb) UpdateDonation(id string, new_data models.EditDonationRequest) (models.EditDonationResponse, error) {
+	donationModel := models.Donation{}
+	err := d.db.Model(&donationModel).Clauses(clause.Returning{}).
+		Where("id=?", id).Updates(models.Donation{
+		Title:       new_data.Title,
+		Description: new_data.Description,
+		Location:    new_data.Location,
+	}).Error
+
+	if err != nil {
+		return models.EditDonationResponse{}, err
+	}
+	response := models.EditDonationResponse{
+		ID:          donationModel.ID,
+		UserID:      donationModel.UserID,
+		PhotoUrl:    donationModel.PhotoUrl,
+		Status:      donationModel.Status,
+		Title:       donationModel.Title,
+		Description: donationModel.Description,
+		Location:    donationModel.Location,
+		UpdatedAt:   donationModel.UpdatedAt,
+	}
+	return response, nil
+}
+
+func (d DonationDb) DeleteDonation(id string) error {
+	err := d.db.Where("id=?", id).Delete(&models.Donation{}, id).Error
+	// err := d.db.Delete(&models.Donation{}, id).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -82,3 +82,60 @@ func (d donationController) GetDonations(ctx *gin.Context) {
 	}
 
 }
+
+func (d donationController) GetDonationById(ctx *gin.Context) {
+	fmt.Println("masuk1")
+	donationId := ctx.Param("donationId")
+	result, err := d.DonationRepository.GetDonationById(donationId)
+	if err != nil {
+		response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
+		return
+	}
+	fmt.Println("masuk2")
+	response := helpers.GetResponse(false, http.StatusOK, "Success", result)
+	ctx.JSON(http.StatusOK, response)
+}
+
+func (d donationController) EditDonation(ctx *gin.Context) {
+	donationId := ctx.Param("donationId")
+	request := models.EditDonationRequest{}
+	contentType := helpers.GetRequestHeaders(ctx).ContentType
+	if contentType == "application/json" {
+		err := ctx.ShouldBindJSON(&request)
+		if err != nil {
+			response := helpers.GetResponse(true, http.StatusBadRequest, "error binding request", nil)
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
+			return
+		}
+	} else {
+		err := ctx.ShouldBind(&request)
+		if err != nil {
+			response := helpers.GetResponse(true, http.StatusBadRequest, "error binding request", nil)
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
+			return
+		}
+	}
+
+	result, err := d.DonationRepository.UpdateDonation(donationId, request)
+	if err != nil {
+		response := helpers.GetResponse(true, http.StatusBadRequest, err.Error(), nil)
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := helpers.GetResponse(false, http.StatusOK, "Success Update Donation Data", result)
+	ctx.JSON(http.StatusOK, response)
+}
+
+func (d donationController) DeleteDonation(ctx *gin.Context) {
+	donationId := ctx.Param("donation")
+	err := d.DonationRepository.DeleteDonation(donationId)
+	if err != nil {
+		response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
+		return
+	}
+	response := helpers.GetResponse(false, http.StatusOK, "Success Delete Donation", nil)
+	ctx.JSON(http.StatusOK, response)
+}
