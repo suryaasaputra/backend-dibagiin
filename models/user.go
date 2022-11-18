@@ -18,7 +18,6 @@ type User struct {
 	UserName       string     `gorm:"not null;uniqueIndex;type:varchar" json:"user_name" form:"user_name" valid:"required~Username is required"`
 	Password       string     `gorm:"not null;type:varchar" json:"password" form:"password" valid:"required~Password is required,minstringlength(8)"`
 	FullName       string     `gorm:"not null;type:varchar" json:"full_name" form:"full_name" valid:"required~Full Name is required"`
-	Age            int        `gorm:"not null" json:"age" form:"age" valid:"required~Age is required"`
 	Gender         string     `gorm:"not null;type:varchar" json:"gender" form:"gender" valid:"required~Gender is required"`
 	PhoneNumber    string     `gorm:"not null;type:varchar" json:"phone_number" form:"phone_number" valid:"required~Phone number is required"`
 	Address        string     `gorm:"not null;type:varchar" json:"address" form:"address" valid:"required~Address is required"`
@@ -33,7 +32,6 @@ type UserRegisterRequest struct {
 	UserName    string `json:"user_name" form:"user_name"`
 	Password    string `json:"password" form:"password" `
 	FullName    string `json:"full_name" form:"full_name" `
-	Age         int    `json:"age" form:"age"`
 	Gender      string `json:"gender" form:"gender" `
 	PhoneNumber string `json:"phone_number" form:"phone_number" `
 	Address     string `json:"address" form:"address" `
@@ -43,7 +41,6 @@ type EditUserRequest struct {
 	Email       string `json:"email" form:"email"`
 	UserName    string `json:"user_name" form:"user_name"`
 	FullName    string `json:"full_name" form:"full_name" `
-	Age         int    `json:"age" form:"age"`
 	Gender      string `json:"gender" form:"gender" `
 	PhoneNumber string `json:"phone_number" form:"phone_number" `
 	Address     string `json:"address" form:"address" `
@@ -62,7 +59,6 @@ type CreateUserResponse struct {
 	Email          string     `json:"email"`
 	UserName       string     `json:"user_name"`
 	FullName       string     `json:"full_name"`
-	Age            int        `json:"age"`
 	Gender         string     `json:"gender"`
 	PhoneNumber    string     `json:"phone_number"`
 	Address        string     `json:"address"`
@@ -74,7 +70,6 @@ type EditUserResponse struct {
 	Email          string     `json:"email"`
 	UserName       string     `json:"user_name"`
 	FullName       string     `json:"full_name"`
-	Age            int        `json:"age"`
 	Gender         string     `json:"gender"`
 	PhoneNumber    string     `json:"phone_number"`
 	Address        string     `json:"address"`
@@ -83,28 +78,17 @@ type EditUserResponse struct {
 }
 
 type GetUserResponse struct {
-	ID             string `json:"id"`
-	Email          string `json:"email"`
-	UserName       string `json:"user_name"`
-	FullName       string `json:"full_name"`
-	Age            int    `json:"age"`
-	Gender         string `json:"gender"`
-	PhoneNumber    string `json:"phone_number"`
-	Address        string `json:"address"`
-	ProfilPhotoUrl string `json:"profil_photo_url"`
-	// Donation       []struct {
-	// 	DonationID  string     `json:"donation_id"`
-	// 	Title       string     `json:"title"`
-	// 	Description string     `json:"description"`
-	// 	Location    string     `json:"location"`
-	// 	PhotoUrl    string     `json:"photo_url"`
-	// 	Status      string     `json:"status"`
-	// 	CreatedAt   *time.Time `json:"created_at"`
-	// 	UpdatedAt   *time.Time `json:"updated_at"`
-	// }
-	Donation   []Donation `json:"donations"`
-	Created_at *time.Time `json:"created_at"`
-	Updated_at *time.Time `json:"updated_at"`
+	ID             string     `json:"id"`
+	Email          string     `json:"email"`
+	UserName       string     `json:"user_name"`
+	FullName       string     `json:"full_name"`
+	Gender         string     `json:"gender"`
+	PhoneNumber    string     `json:"phone_number"`
+	Address        string     `json:"address"`
+	ProfilPhotoUrl string     `json:"profil_photo_url"`
+	Donation       []Donation `json:"donations"`
+	Created_at     *time.Time `json:"created_at"`
+	Updated_at     *time.Time `json:"updated_at"`
 }
 
 // Hooks model user
