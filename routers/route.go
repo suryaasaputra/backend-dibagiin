@@ -5,12 +5,14 @@ import (
 	"dibagi/middlewares"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func StartServer(ctl controllers.Controller) error {
 
 	r := gin.Default()
+	r.Use(cors.Default())
 	r.LoadHTMLGlob("*.html")
 	r.GET("/", ctl.HomeController)
 
