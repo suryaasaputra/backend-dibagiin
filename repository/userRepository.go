@@ -12,6 +12,7 @@ type IUserRepository interface {
 	EditUser(string, models.User) (models.EditUserResponse, error)
 	GetUserByEmail(string) models.User
 	GetUserByUserName(string) models.GetUserResponse
+	GetUserById(string) models.GetUserResponse
 	SetProfilePhoto(string, string) error
 	DeleteUser(string) error
 }
@@ -57,7 +58,7 @@ func (u UserDb) GetUserByEmail(email string) models.User {
 func (u UserDb) GetUserByUserName(userName string) models.GetUserResponse {
 	User := models.User{}
 
-	u.db.Where("user_name =? ", userName).First(&User)
+	u.db.Preload("Donation").Where("user_name =? ", userName).First(&User)
 	response := models.GetUserResponse{
 		ID:             User.ID,
 		UserName:       User.UserName,
@@ -68,6 +69,27 @@ func (u UserDb) GetUserByUserName(userName string) models.GetUserResponse {
 		Address:        User.Address,
 		PhoneNumber:    User.PhoneNumber,
 		ProfilPhotoUrl: User.ProfilPhotoUrl,
+		Donation:       User.Donation,
+		Created_at:     User.CreatedAt,
+		Updated_at:     User.UpdatedAt,
+	}
+	return response
+}
+func (u UserDb) GetUserById(id string) models.GetUserResponse {
+	User := models.User{}
+
+	u.db.Preload("Donation").Where("id =? ", id).First(&User)
+	response := models.GetUserResponse{
+		ID:             User.ID,
+		UserName:       User.UserName,
+		Email:          User.Email,
+		FullName:       User.FullName,
+		Age:            User.Age,
+		Gender:         User.Gender,
+		Address:        User.Address,
+		PhoneNumber:    User.PhoneNumber,
+		ProfilPhotoUrl: User.ProfilPhotoUrl,
+		Donation:       User.Donation,
 		Created_at:     User.CreatedAt,
 		Updated_at:     User.UpdatedAt,
 	}

@@ -25,45 +25,7 @@ type User struct {
 	ProfilPhotoUrl string     `gorm:"type:varchar;" json:"profil_photo_url" form:"profil_photo_url" `
 	CreatedAt      *time.Time `json:"created_at"`
 	UpdatedAt      *time.Time `json:"updated_at"`
-}
-
-type CreateUserResponse struct {
-	ID             string     `json:"id"`
-	Email          string     `json:"email"`
-	UserName       string     `json:"user_name"`
-	FullName       string     `json:"full_name"`
-	Age            int        `json:"age"`
-	Gender         string     `json:"gender"`
-	PhoneNumber    string     `json:"phone_number"`
-	Address        string     `json:"address"`
-	ProfilPhotoUrl string     `json:"profil_photo_url"`
-	CreatedAt      *time.Time `json:"created_at"`
-}
-type EditUserResponse struct {
-	ID             string     `json:"id"`
-	Email          string     `json:"email"`
-	UserName       string     `json:"user_name"`
-	FullName       string     `json:"full_name"`
-	Age            int        `json:"age"`
-	Gender         string     `json:"gender"`
-	PhoneNumber    string     `json:"phone_number"`
-	Address        string     `json:"address"`
-	ProfilPhotoUrl string     `json:"profil_photo_url"`
-	Updated_at     *time.Time `json:"updated_at"`
-}
-
-type GetUserResponse struct {
-	ID             string     `json:"id"`
-	Email          string     `json:"email"`
-	UserName       string     `json:"user_name"`
-	FullName       string     `json:"full_name"`
-	Age            int        `json:"age"`
-	Gender         string     `json:"gender"`
-	PhoneNumber    string     `json:"phone_number"`
-	Address        string     `json:"address"`
-	ProfilPhotoUrl string     `json:"profil_photo_url"`
-	Created_at     *time.Time `json:"created_at"`
-	Updated_at     *time.Time `json:"updated_at"`
+	Donation       []Donation `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 type UserRegisterRequest struct {
@@ -94,6 +56,55 @@ type UserLoginRequest struct {
 
 type SetProfilePhotoRequest struct {
 	ProfilPhoto *multipart.FileHeader `json:"profil_photo,omitempty" form:"profil_photo,omitempty" `
+}
+type CreateUserResponse struct {
+	ID             string     `json:"id"`
+	Email          string     `json:"email"`
+	UserName       string     `json:"user_name"`
+	FullName       string     `json:"full_name"`
+	Age            int        `json:"age"`
+	Gender         string     `json:"gender"`
+	PhoneNumber    string     `json:"phone_number"`
+	Address        string     `json:"address"`
+	ProfilPhotoUrl string     `json:"profil_photo_url"`
+	CreatedAt      *time.Time `json:"created_at"`
+}
+type EditUserResponse struct {
+	ID             string     `json:"id"`
+	Email          string     `json:"email"`
+	UserName       string     `json:"user_name"`
+	FullName       string     `json:"full_name"`
+	Age            int        `json:"age"`
+	Gender         string     `json:"gender"`
+	PhoneNumber    string     `json:"phone_number"`
+	Address        string     `json:"address"`
+	ProfilPhotoUrl string     `json:"profil_photo_url"`
+	Updated_at     *time.Time `json:"updated_at"`
+}
+
+type GetUserResponse struct {
+	ID             string `json:"id"`
+	Email          string `json:"email"`
+	UserName       string `json:"user_name"`
+	FullName       string `json:"full_name"`
+	Age            int    `json:"age"`
+	Gender         string `json:"gender"`
+	PhoneNumber    string `json:"phone_number"`
+	Address        string `json:"address"`
+	ProfilPhotoUrl string `json:"profil_photo_url"`
+	// Donation       []struct {
+	// 	DonationID  string     `json:"donation_id"`
+	// 	Title       string     `json:"title"`
+	// 	Description string     `json:"description"`
+	// 	Location    string     `json:"location"`
+	// 	PhotoUrl    string     `json:"photo_url"`
+	// 	Status      string     `json:"status"`
+	// 	CreatedAt   *time.Time `json:"created_at"`
+	// 	UpdatedAt   *time.Time `json:"updated_at"`
+	// }
+	Donation   []Donation `json:"donations"`
+	Created_at *time.Time `json:"created_at"`
+	Updated_at *time.Time `json:"updated_at"`
 }
 
 // Hooks model user

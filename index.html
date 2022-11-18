@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <form action="/register" method="POST" enctype="multipart/form-data">
+    <!-- <form action="/register" method="POST" enctype="multipart/form-data">
         <div>
             <label for="email">Email</label>
             <input type="email" name="email" id="email">
@@ -26,10 +26,6 @@
             <label for="full_name">Full Name</label>
             <input type="text" name="full_name" id="full_name">
         </div>
-        <!-- <div>
-            <label for="profil_photo">Profil Picture</label>
-            <input type="file" name="profil_photo" id="profil_photo" accept=".png,.jpg,.jpeg" value="">
-        </div> -->
         <div>
             <label for="Age">Age</label>
             <input type="number" name="age" id="age">
@@ -50,6 +46,38 @@
 
         <input type="submit" value="Submit">
     </form>
+
+    <br>
+    <br> -->
+
+    <h1>create donation</h1>
+    <form action="/donation" method="POST" enctype="multipart/form-data">
+        <div>
+            <label for="title">Title</label>
+            <input type="text" name="title" id="title">
+        </div>
+        <div>
+            <label for="description">Description</label>
+            <input type="text" name="description" id="description">
+        </div>
+        <div>
+            <label for="location">Location</label>
+            <input type="text" name="location" id="location">
+        </div>
+        <div>
+            <label for="donation_photo">Donation Photo</label>
+            <input type="file" name="donation_photo" id="donation_photo" accept=".png,.jpg,.jpeg" value="">
+        </div>
+
+        <input type="submit" value="Submit">
+    </form>
+    <script>
+        req.open("POST", url, true);
+        req.setRequestHeader('Content-Type', 'application/blahblah');
+        req.setRequestHeader('Accept', 'application/blahblah');
+        req.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
+        req.send();
+    </script>
 </body>
 
 </html>
