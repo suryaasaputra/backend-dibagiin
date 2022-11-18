@@ -19,10 +19,7 @@ func NewController(userController *userController, donationController *donationC
 }
 
 func (c Controller) HomeController(ctx *gin.Context) {
-	// ctx.JSON(http.StatusOK, gin.H{
-	// 	"message": "welcome",
-	// })
-	ctx.HTML(http.StatusOK, "index.html", gin.H{
-		"message": "this is index",
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "welcome",
 	})
 }
