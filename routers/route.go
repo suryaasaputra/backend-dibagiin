@@ -30,11 +30,13 @@ func StartServer(ctl controllers.Controller) error {
 	}
 	donationRouter := r.Group("/donation")
 	{
-		donationRouter.POST("", middlewares.Authentication(), ctl.DonationController.Create)
-		donationRouter.GET("", middlewares.Authentication(), ctl.DonationController.GetDonations)
-		donationRouter.GET("/:donationId", middlewares.Authentication(), ctl.DonationController.GetDonationById)
-		donationRouter.PUT("/:donationId", middlewares.Authentication(), ctl.DonationController.EditDonation)
-		donationRouter.DELETE("/:donationId", middlewares.Authentication(), ctl.DonationController.DeleteDonation)
+		donationRouter.Use(middlewares.Authentication())
+		donationRouter.POST("", ctl.DonationController.Create)
+		donationRouter.GET("", ctl.DonationController.GetDonations)
+		donationRouter.GET("/:donationId", ctl.DonationController.GetDonationById)
+		// donationRouter.Use(middlewares.DonationAuthorization())
+		donationRouter.PUT("/:donationId", ctl.DonationController.EditDonation)
+		donationRouter.DELETE("/:donationId", ctl.DonationController.DeleteDonation)
 
 	}
 	var PORT = os.Getenv("PORT")

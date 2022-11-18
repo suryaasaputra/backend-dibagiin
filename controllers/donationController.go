@@ -84,15 +84,13 @@ func (d donationController) GetDonations(ctx *gin.Context) {
 }
 
 func (d donationController) GetDonationById(ctx *gin.Context) {
-	fmt.Println("masuk1")
 	donationId := ctx.Param("donationId")
 	result, err := d.DonationRepository.GetDonationById(donationId)
 	if err != nil {
-		response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
+		response := helpers.GetResponse(true, http.StatusNotFound, err.Error(), nil)
+		ctx.AbortWithStatusJSON(http.StatusNotFound, response)
 		return
 	}
-	fmt.Println("masuk2")
 	response := helpers.GetResponse(false, http.StatusOK, "Success", result)
 	ctx.JSON(http.StatusOK, response)
 }
@@ -129,7 +127,7 @@ func (d donationController) EditDonation(ctx *gin.Context) {
 }
 
 func (d donationController) DeleteDonation(ctx *gin.Context) {
-	donationId := ctx.Param("donation")
+	donationId := ctx.Param("donationId")
 	err := d.DonationRepository.DeleteDonation(donationId)
 	if err != nil {
 		response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)

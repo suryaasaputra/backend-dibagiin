@@ -134,8 +134,8 @@ func (d DonationDb) UpdateDonation(id string, new_data models.EditDonationReques
 }
 
 func (d DonationDb) DeleteDonation(id string) error {
-	err := d.db.Where("id=?", id).Delete(&models.Donation{}, id).Error
-	// err := d.db.Delete(&models.Donation{}, id).Error
+	Donation := models.Donation{}
+	err := d.db.Where("id=?", id).Delete(&Donation).Error
 	if err != nil {
 		return err
 	}
