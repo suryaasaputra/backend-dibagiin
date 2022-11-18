@@ -117,7 +117,12 @@ func (u userController) Login(ctx *gin.Context) {
 	}
 
 	response := helpers.GetResponse(false, http.StatusOK, "Login Success", gin.H{
-		"token": token,
+		"id":               userResult.ID,
+		"email":            userResult.Email,
+		"user_name":        userResult.UserName,
+		"full_name":        userResult.FullName,
+		"profil_photo_url": userResult.ProfilPhotoUrl,
+		"token":            token,
 	})
 
 	ctx.JSON(http.StatusOK, response)
