@@ -94,7 +94,7 @@ func (u userController) Login(ctx *gin.Context) {
 	userResult := u.UserRepository.GetUserByEmail(request.Email)
 
 	if userResult.Email == "" {
-		response := helpers.GetResponse(true, http.StatusUnauthorized, "Incorrect email or password", nil)
+		response := helpers.GetResponse(true, http.StatusUnauthorized, "Email not registered", nil)
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, response)
 		return
 	}
@@ -102,7 +102,7 @@ func (u userController) Login(ctx *gin.Context) {
 	isPasswordCorrect := helpers.ComparePassword([]byte(userResult.Password), []byte(request.Password))
 
 	if !isPasswordCorrect {
-		response := helpers.GetResponse(true, http.StatusUnauthorized, "Incorrect email or password", nil)
+		response := helpers.GetResponse(true, http.StatusUnauthorized, "Incorrect password", nil)
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, response)
 		return
 	}
