@@ -2,7 +2,10 @@ package repository
 
 import (
 	"dibagi/models"
+	"errors"
 
+	"github.com/jackc/pgconn"
+	"github.com/jackc/pgerrcode"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -29,7 +32,13 @@ func NewUserRepository(db *gorm.DB) *UserDb {
 
 func (u UserDb) RegisterUser(user models.User) (models.CreateUserResponse, error) {
 	err := u.db.Create(&user).Error
+
 	if err != nil {
+		pgErr := err.(*pgconn.PgError)
+
+		if pgErr.Code == pgerrcode.UniqueViolation {
+			return models.CreateUserResponse{}, errors.New(pgErr.Detail)
+		}
 		return models.CreateUserResponse{}, err
 	}
 

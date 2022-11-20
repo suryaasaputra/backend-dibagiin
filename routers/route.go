@@ -21,11 +21,11 @@ func StartServer(ctl controllers.Controller) error {
 
 	userRouter := r.Group("/user")
 	{
-		userRouter.GET("/:userName", ctl.UserController.GetUser)
 		userRouter.GET("", ctl.UserController.CheckUser)
 		userRouter.Use(middlewares.Authentication())
 		userRouter.Use(middlewares.UserAuthorization())
-		userRouter.PATCH("/:userName/UpdateProfilPhoto", ctl.UserController.SetProfilePhoto)
+		userRouter.GET("/:userName", ctl.UserController.GetUser)
+		userRouter.PUT("/:userName/ProfilPhoto", ctl.UserController.SetProfilePhoto)
 		userRouter.PUT("/:userName", ctl.UserController.Update)
 		userRouter.DELETE("/:userName", ctl.UserController.Delete)
 	}
@@ -35,7 +35,7 @@ func StartServer(ctl controllers.Controller) error {
 		donationRouter.POST("", ctl.DonationController.Create)
 		donationRouter.GET("", ctl.DonationController.GetDonations)
 		donationRouter.GET("/:donationId", ctl.DonationController.GetDonationById)
-		// donationRouter.Use(middlewares.DonationAuthorization())
+		donationRouter.Use(middlewares.DonationAuthorization())
 		donationRouter.PUT("/:donationId", ctl.DonationController.EditDonation)
 		donationRouter.DELETE("/:donationId", ctl.DonationController.DeleteDonation)
 

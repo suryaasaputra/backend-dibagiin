@@ -212,38 +212,25 @@ func (u userController) SetProfilePhoto(ctx *gin.Context) {
 
 func (u userController) CheckUser(ctx *gin.Context) {
 	email := ctx.Query("email")
-	// id:= ctx.Query("id")
-	// u.UserRepository.GetUserById(id)
 	userName := ctx.Query("user_name")
-	if email == "" && userName == "" {
-		response := helpers.GetResponse(true, http.StatusBadRequest, "Email or Username empty", nil)
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
-		return
-	}
-	if email != "" && userName != "" {
-		response := helpers.GetResponse(true, http.StatusBadRequest, "Query parameters cannot more than one", nil)
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
-		return
-	}
-	if userName != "" {
+	if userName != "" && email == "" {
 		result := u.UserRepository.GetUserByUserName(userName)
 		if result.UserName == userName {
 			response := helpers.GetResponse(true, http.StatusBadRequest, "Username Already Taken", nil)
-			ctx.JSON(http.StatusNoContent, response)
+			ctx.JSON(http.StatusBadRequest, response)
 			return
 		}
-		response := helpers.GetResponse(false, http.StatusOK, "Username Avaible", nil)
+		response := helpers.GetResponse(false, http.StatusOK, "Username Available", nil)
 		ctx.JSON(http.StatusOK, response)
-		return
-	}
-	if email != "" {
+
+	} else if email != "" && userName == "" {
 		result := u.UserRepository.GetUserByEmail(email)
 		if result.Email == email {
 			response := helpers.GetResponse(true, http.StatusBadRequest, "Email Already Taken", nil)
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
 			return
 		}
-		response := helpers.GetResponse(false, http.StatusOK, "Email Avaible", nil)
+		response := helpers.GetResponse(false, http.StatusOK, "Email Available", nil)
 		ctx.JSON(http.StatusOK, response)
 	}
 }
