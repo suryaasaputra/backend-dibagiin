@@ -31,7 +31,12 @@ func DonationAuthorization() gin.HandlerFunc {
 
 		donationId := ctx.Param("donationId")
 
-		db := repository.GetDB()
+		db, err := repository.NewDB()
+		if err != nil {
+			response := helpers.GetResponse(true, http.StatusInternalServerError, "Something went wrong", nil)
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
+			return
+		}
 		donationRepository := repository.NewDonationRepository(db)
 		result, err := donationRepository.GetDonationById(donationId)
 		if err != nil {
