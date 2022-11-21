@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func StartServer(ctl controllers.Controller) error {
+func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 
 	r := gin.Default()
 	r.Use(cors.Default())
@@ -22,8 +22,8 @@ func StartServer(ctl controllers.Controller) error {
 	userRouter := r.Group("/user")
 	{
 		userRouter.GET("", ctl.UserController.CheckUser)
-		userRouter.Use(middlewares.Authentication())
-		userRouter.Use(middlewares.UserAuthorization())
+		userRouter.Use(mdl.UserMiddleware.Authentication())
+		userRouter.Use(mdl.UserMiddleware.Authorization())
 		userRouter.GET("/:userName", ctl.UserController.GetUser)
 		userRouter.PUT("/:userName/ProfilPhoto", ctl.UserController.SetProfilePhoto)
 		userRouter.PUT("/:userName", ctl.UserController.Update)
@@ -31,11 +31,11 @@ func StartServer(ctl controllers.Controller) error {
 	}
 	donationRouter := r.Group("/donation")
 	{
-		donationRouter.Use(middlewares.Authentication())
+		donationRouter.Use(mdl.UserMiddleware.Authentication())
 		donationRouter.POST("", ctl.DonationController.Create)
 		donationRouter.GET("", ctl.DonationController.GetDonations)
 		donationRouter.GET("/:donationId", ctl.DonationController.GetDonationById)
-		donationRouter.Use(middlewares.DonationAuthorization())
+		donationRouter.Use(mdl.DonationMiddleware.Authorization())
 		donationRouter.PUT("/:donationId", ctl.DonationController.EditDonation)
 		donationRouter.DELETE("/:donationId", ctl.DonationController.DeleteDonation)
 

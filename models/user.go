@@ -105,6 +105,7 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 	u.ID = newID
 	userName := strings.ReplaceAll(u.UserName, " ", "")
 	lowerCase := strings.ToLower(userName)
+	u.Email = strings.ToLower(u.Email)
 	u.UserName = lowerCase
 	u.Password = hashedPassword
 	if u.ProfilPhotoUrl == "" {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"dibagi/controllers"
+	"dibagi/middlewares"
 	"dibagi/repository"
 	"dibagi/routers"
 	"fmt"
@@ -16,12 +17,17 @@ func main() {
 
 	userRepository := repository.NewUserRepository(db)
 	donationRepository := repository.NewDonationRepository(db)
+
 	userController := controllers.NewUserController(userRepository)
 	donationController := controllers.NewDonationController(donationRepository)
 
-	controller := controllers.NewController(userController, donationController)
+	userMiddleware := middlewares.NewUserMiddleware(userRepository)
+	donationMiddleware := middlewares.NewDonationMiddleware(donationRepository)
 
-	err = routers.StartServer(controller)
+	controller := controllers.NewController(userController, donationController)
+	middleware := middlewares.NewMiddleware(userMiddleware, donationMiddleware)
+
+	err = routers.StartServer(controller, middleware)
 	if err != nil {
 		fmt.Println("error starting server", err)
 		return
