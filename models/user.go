@@ -13,18 +13,19 @@ import (
 )
 
 type User struct {
-	ID             string     `gorm:"primaryKey;type:varchar" json:"id"`
-	Email          string     `gorm:"not null;uniqueIndex;type:varchar" json:"email" form:"email" valid:"required~Email is required,email~Invalid email address"`
-	UserName       string     `gorm:"not null;uniqueIndex;type:varchar" json:"user_name" form:"user_name" valid:"required~Username is required"`
-	Password       string     `gorm:"not null;type:varchar" json:"password" form:"password" valid:"required~Password is required,minstringlength(8)"`
-	FullName       string     `gorm:"not null;type:varchar" json:"full_name" form:"full_name" valid:"required~Full Name is required"`
-	Gender         string     `gorm:"not null;type:varchar" json:"gender" form:"gender" valid:"required~Gender is required"`
-	PhoneNumber    string     `gorm:"not null;type:varchar" json:"phone_number" form:"phone_number" valid:"required~Phone number is required"`
-	Address        string     `gorm:"not null;type:varchar" json:"address" form:"address" valid:"required~Address is required"`
-	ProfilPhotoUrl string     `gorm:"type:varchar;" json:"profil_photo_url" form:"profil_photo_url" `
-	CreatedAt      *time.Time `json:"created_at"`
-	UpdatedAt      *time.Time `json:"updated_at"`
-	Donation       []Donation `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	ID              string            `gorm:"primaryKey;type:varchar" json:"id"`
+	Email           string            `gorm:"not null;uniqueIndex;type:varchar" json:"email" form:"email" valid:"required~Email is required,email~Invalid email address"`
+	UserName        string            `gorm:"not null;uniqueIndex;type:varchar" json:"user_name" form:"user_name" valid:"required~Username is required"`
+	Password        string            `gorm:"not null;type:varchar" json:"password" form:"password" valid:"required~Password is required,minstringlength(8)"`
+	FullName        string            `gorm:"not null;type:varchar" json:"full_name" form:"full_name" valid:"required~Full Name is required"`
+	Gender          string            `gorm:"not null;type:varchar" json:"gender" form:"gender" valid:"required~Gender is required"`
+	PhoneNumber     string            `gorm:"not null;type:varchar" json:"phone_number" form:"phone_number" valid:"required~Phone number is required"`
+	Address         string            `gorm:"not null;type:varchar" json:"address" form:"address" valid:"required~Address is required"`
+	ProfilPhotoUrl  string            `gorm:"type:varchar;" json:"profil_photo_url" form:"profil_photo_url" `
+	CreatedAt       *time.Time        `json:"created_at"`
+	UpdatedAt       *time.Time        `json:"updated_at"`
+	Donation        []Donation        `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	DonationRequest []DonationRequest `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 type UserRegisterRequest struct {

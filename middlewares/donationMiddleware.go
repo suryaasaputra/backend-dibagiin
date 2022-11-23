@@ -24,7 +24,7 @@ func (d donationMiddleware) Authorization() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		donationId := ctx.Param("donationId")
-		result, err := d.DonationRepository.GetDonationById(donationId)
+		result, err := d.DonationRepository.GetById(donationId)
 		if err != nil {
 			response := helpers.GetResponse(true, http.StatusInternalServerError, "Something went wrong", nil)
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)

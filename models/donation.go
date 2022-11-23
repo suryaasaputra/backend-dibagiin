@@ -10,17 +10,16 @@ import (
 )
 
 type Donation struct {
-	ID          string `json:"id" gorm:"primaryKey;type:varchar"`
-	UserID      string `json:"-" gorm:"not null;"`
-	Title       string `json:"title" form:"title" gorm:"not null;type:varchar" valid:"required~Title is required"`
-	Description string `json:"description" form:"description" gorm:"not null;type:varchar" valid:"required~Description is required"`
-	PhotoUrl    string `json:"photo_url" form:"photo_url" gorm:"not null;type:varchar" valid:"required~Photo URL is required"`
-	Location    string `json:"location" form:"location" gorm:"not null;type:varchar" valid:"required~Location is required"`
-	Status      string `json:"status" form:"status" gorm:"not null;type:varchar;default:available"`
-
-	User      *User      `json:"-"`
-	CreatedAt *time.Time `json:"created_at"`
-	UpdatedAt *time.Time `json:"updated_at"`
+	ID          string     `json:"id" gorm:"primaryKey;type:varchar"`
+	UserID      string     `json:"-" gorm:"not null;"`
+	Title       string     `json:"title" form:"title" gorm:"not null;type:varchar" valid:"required~Title is required"`
+	Description string     `json:"description" form:"description" gorm:"not null;type:varchar" valid:"required~Description is required"`
+	PhotoUrl    string     `json:"photo_url" form:"photo_url" gorm:"not null;type:varchar" valid:"required~Photo URL is required"`
+	Location    string     `json:"location" form:"location" gorm:"not null;type:varchar" valid:"required~Location is required"`
+	Status      string     `json:"status" gorm:"not null;type:varchar;default:available"`
+	User        *User      `json:"-"`
+	CreatedAt   *time.Time `json:"created_at"`
+	UpdatedAt   *time.Time `json:"updated_at"`
 }
 
 type CreateDonationRequest struct {

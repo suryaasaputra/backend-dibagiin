@@ -59,7 +59,7 @@ func (u userController) Register(ctx *gin.Context) {
 		Address:     registerUser.Address,
 	}
 
-	resp, err := u.UserRepository.RegisterUser(user)
+	resp, err := u.UserRepository.Create(user)
 	if err != nil {
 		response := helpers.GetResponse(true, http.StatusBadRequest, err.Error(), nil)
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
@@ -91,7 +91,7 @@ func (u userController) Login(ctx *gin.Context) {
 		}
 	}
 
-	userResult := u.UserRepository.GetUserByEmail(request.Email)
+	userResult := u.UserRepository.GetByEmail(request.Email)
 
 	if userResult.Email == "" {
 		response := helpers.GetResponse(true, http.StatusUnauthorized, "Email not registered", nil)
@@ -129,7 +129,7 @@ func (u userController) Login(ctx *gin.Context) {
 
 func (u userController) GetUser(ctx *gin.Context) {
 	userNameURL := ctx.Param("userName")
-	userResult := u.UserRepository.GetUserByUserName(userNameURL)
+	userResult := u.UserRepository.GetByUserName(userNameURL)
 	if userResult.UserName == "" {
 		response := helpers.GetResponse(true, http.StatusNotFound, "User not found", nil)
 		ctx.AbortWithStatusJSON(http.StatusNotFound, response)
@@ -168,7 +168,7 @@ func (u userController) Update(ctx *gin.Context) {
 		PhoneNumber: request.PhoneNumber,
 		Address:     request.Address,
 	}
-	result, err := u.UserRepository.EditUser(userNameURL, newUserData)
+	result, err := u.UserRepository.Edit(userNameURL, newUserData)
 	if err != nil {
 		response := helpers.GetResponse(true, http.StatusBadRequest, err.Error(), nil)
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
@@ -214,7 +214,7 @@ func (u userController) CheckUser(ctx *gin.Context) {
 	email := ctx.Query("email")
 	userName := ctx.Query("user_name")
 	if userName != "" && email == "" {
-		result := u.UserRepository.GetUserByUserName(userName)
+		result := u.UserRepository.GetByUserName(userName)
 		if result.UserName == userName {
 			response := helpers.GetResponse(true, http.StatusBadRequest, "Username Already Taken", nil)
 			ctx.JSON(http.StatusBadRequest, response)
@@ -224,7 +224,7 @@ func (u userController) CheckUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, response)
 
 	} else if email != "" && userName == "" {
-		result := u.UserRepository.GetUserByEmail(email)
+		result := u.UserRepository.GetByEmail(email)
 		if result.Email == email {
 			response := helpers.GetResponse(true, http.StatusBadRequest, "Email Already Taken", nil)
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
@@ -239,7 +239,7 @@ func (u userController) Delete(ctx *gin.Context) {
 	userData := ctx.MustGet("userData").(jwt.MapClaims)
 	userID := fmt.Sprintf("%v", userData["id"])
 
-	err := u.UserRepository.DeleteUser(userID)
+	err := u.UserRepository.Delete(userID)
 	if err != nil {
 		response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)

@@ -9,8 +9,6 @@ import (
 	"gorm.io/gorm"
 )
 
-var dbs *gorm.DB
-
 func NewDB() (*gorm.DB, error) {
 	db, err := gorm.Open(postgres.Open(config.DB_CONFIG), &gorm.Config{})
 	if err != nil {
@@ -18,14 +16,10 @@ func NewDB() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	err = db.Debug().AutoMigrate(models.User{}, models.Donation{})
+	err = db.Debug().AutoMigrate(models.User{}, models.Donation{}, models.DonationRequest{})
 	if err != nil {
 		fmt.Println("error migrating Repository", err)
 		return nil, err
 	}
 	return db, nil
-}
-
-func GetDB() *gorm.DB {
-	return dbs
 }

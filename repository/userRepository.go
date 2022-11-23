@@ -11,13 +11,13 @@ import (
 )
 
 type IUserRepository interface {
-	RegisterUser(models.User) (models.CreateUserResponse, error)
-	EditUser(string, models.User) (models.EditUserResponse, error)
-	GetUserByEmail(string) models.User
-	GetUserByUserName(string) models.GetUserResponse
-	GetUserById(string) models.GetUserResponse
+	Create(models.User) (models.CreateUserResponse, error)
+	Edit(string, models.User) (models.EditUserResponse, error)
+	GetByEmail(string) models.User
+	GetByUserName(string) models.GetUserResponse
+	GetById(string) models.GetUserResponse
 	SetProfilePhoto(string, string) error
-	DeleteUser(string) error
+	Delete(string) error
 }
 
 type UserDb struct {
@@ -30,7 +30,7 @@ func NewUserRepository(db *gorm.DB) *UserDb {
 	}
 }
 
-func (u UserDb) RegisterUser(user models.User) (models.CreateUserResponse, error) {
+func (u UserDb) Create(user models.User) (models.CreateUserResponse, error) {
 	err := u.db.Create(&user).Error
 
 	if err != nil {
@@ -55,7 +55,7 @@ func (u UserDb) RegisterUser(user models.User) (models.CreateUserResponse, error
 	}, nil
 }
 
-func (u UserDb) GetUserByEmail(email string) models.User {
+func (u UserDb) GetByEmail(email string) models.User {
 	User := models.User{}
 
 	u.db.Where("email =? ", email).First(&User)
@@ -63,7 +63,7 @@ func (u UserDb) GetUserByEmail(email string) models.User {
 	return User
 }
 
-func (u UserDb) GetUserByUserName(userName string) models.GetUserResponse {
+func (u UserDb) GetByUserName(userName string) models.GetUserResponse {
 	User := models.User{}
 
 	u.db.Preload("Donation").Where("user_name =? ", userName).First(&User)
@@ -82,7 +82,7 @@ func (u UserDb) GetUserByUserName(userName string) models.GetUserResponse {
 	}
 	return response
 }
-func (u UserDb) GetUserById(id string) models.GetUserResponse {
+func (u UserDb) GetById(id string) models.GetUserResponse {
 	User := models.User{}
 
 	u.db.Preload("Donation").Where("id =? ", id).First(&User)
@@ -102,7 +102,7 @@ func (u UserDb) GetUserById(id string) models.GetUserResponse {
 	return response
 }
 
-func (u UserDb) EditUser(username string, newUserData models.User) (models.EditUserResponse, error) {
+func (u UserDb) Edit(username string, newUserData models.User) (models.EditUserResponse, error) {
 	User := models.User{}
 	err := u.db.Model(&User).Clauses(clause.Returning{}).Where("user_name=?", username).Updates(models.User{
 		Email:       newUserData.Email,
@@ -143,7 +143,7 @@ func (u UserDb) SetProfilePhoto(id, photoUrl string) error {
 	return nil
 }
 
-func (u UserDb) DeleteUser(id string) error {
+func (u UserDb) Delete(id string) error {
 	User := models.User{
 		ID: id,
 	}

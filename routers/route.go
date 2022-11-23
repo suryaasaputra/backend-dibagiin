@@ -33,11 +33,17 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 	{
 		donationRouter.Use(mdl.UserMiddleware.Authentication())
 		donationRouter.POST("", ctl.DonationController.Create)
-		donationRouter.GET("", ctl.DonationController.GetDonations)
+		donationRouter.GET("", ctl.DonationController.GetAll)
 		donationRouter.GET("/:donationId", ctl.DonationController.GetDonationById)
+
+		//route to request a donation
+		donationRouter.POST("/:donationId/request", mdl.DonationRequestMiddleware.CheckIfExist(), ctl.DonationRequestController.Create)
+		donationRouter.GET("/request", ctl.DonationRequestController.GetAll)
+		donationRouter.GET("/request/:donationRequestId", ctl.DonationRequestController.GetById)
+
 		donationRouter.Use(mdl.DonationMiddleware.Authorization())
-		donationRouter.PUT("/:donationId", ctl.DonationController.EditDonation)
-		donationRouter.DELETE("/:donationId", ctl.DonationController.DeleteDonation)
+		donationRouter.PUT("/:donationId", ctl.DonationController.Edit)
+		donationRouter.DELETE("/:donationId", ctl.DonationController.Delete)
 
 	}
 	var PORT = os.Getenv("PORT")

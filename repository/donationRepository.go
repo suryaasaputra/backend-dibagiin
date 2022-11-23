@@ -9,11 +9,11 @@ import (
 
 type IDonationRepository interface {
 	Create(models.Donation) (models.CreateDonationResponse, error)
-	GetDonations() ([]models.GetDonationsResponse, error)
-	GetDonationById(string) (models.GetDonationsResponse, error)
-	GetAvailableDonations() ([]models.GetDonationsResponse, error)
-	UpdateDonation(string, models.EditDonationRequest) (models.EditDonationResponse, error)
-	DeleteDonation(string) error
+	GetAll() ([]models.GetDonationsResponse, error)
+	GetById(string) (models.GetDonationsResponse, error)
+	GetAllAvailable() ([]models.GetDonationsResponse, error)
+	Edit(string, models.EditDonationRequest) (models.EditDonationResponse, error)
+	Delete(string) error
 }
 
 type DonationDb struct {
@@ -43,7 +43,7 @@ func (d DonationDb) Create(donation models.Donation) (models.CreateDonationRespo
 	}, nil
 }
 
-func (d DonationDb) GetDonations() ([]models.GetDonationsResponse, error) {
+func (d DonationDb) GetAll() ([]models.GetDonationsResponse, error) {
 	donations := []models.Donation{}
 	err := d.db.Preload("User").Find(&donations).Error
 	if err != nil {
@@ -60,12 +60,11 @@ func (d DonationDb) GetDonations() ([]models.GetDonationsResponse, error) {
 		response.Donator.FullName = v.User.FullName
 		response.Donator.PhoneNumber = v.User.PhoneNumber
 		donationList = append(donationList, response)
-
 	}
 
 	return donationList, nil
 }
-func (d DonationDb) GetAvailableDonations() ([]models.GetDonationsResponse, error) {
+func (d DonationDb) GetAllAvailable() ([]models.GetDonationsResponse, error) {
 	donations := []models.Donation{}
 	err := d.db.Where("status=?", "available").Preload("User").Find(&donations).Error
 	if err != nil {
@@ -85,7 +84,7 @@ func (d DonationDb) GetAvailableDonations() ([]models.GetDonationsResponse, erro
 	return donationList, nil
 }
 
-func (d DonationDb) GetDonationById(id string) (models.GetDonationsResponse, error) {
+func (d DonationDb) GetById(id string) (models.GetDonationsResponse, error) {
 	donation := models.Donation{}
 	err := d.db.Where("id=?", id).Preload("User").First(&donation).Error
 	if err != nil {
@@ -108,7 +107,7 @@ func (d DonationDb) GetDonationById(id string) (models.GetDonationsResponse, err
 	return result, nil
 }
 
-func (d DonationDb) UpdateDonation(id string, new_data models.EditDonationRequest) (models.EditDonationResponse, error) {
+func (d DonationDb) Edit(id string, new_data models.EditDonationRequest) (models.EditDonationResponse, error) {
 	donationModel := models.Donation{}
 	err := d.db.Model(&donationModel).Clauses(clause.Returning{}).
 		Where("id=?", id).Updates(models.Donation{
@@ -133,7 +132,7 @@ func (d DonationDb) UpdateDonation(id string, new_data models.EditDonationReques
 	return response, nil
 }
 
-func (d DonationDb) DeleteDonation(id string) error {
+func (d DonationDb) Delete(id string) error {
 	Donation := models.Donation{}
 	err := d.db.Where("id=?", id).Delete(&Donation).Error
 	if err != nil {
