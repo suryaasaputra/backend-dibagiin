@@ -7,10 +7,14 @@ import (
 )
 
 type IDonationRequestRepository interface {
-	GetAll() ([]models.GetDonationRequestResponse, error)
+	GetAllByUserId(string) ([]models.GetDonationRequestResponse, error)
+	GetAllByDonationId(string) ([]models.GetDonationRequestResponse, error)
+	GetAllByDonatorId(string) ([]models.GetDonationRequestResponse, error)
 	GetById(string) (models.GetDonationRequestResponse, error)
 	GetByDonationId(string) (models.DonationRequest, error)
 	Create(models.DonationRequest) (models.CreateDonationRequestResponse, error)
+	Confirm(string) error
+	// Reject(string) error
 }
 
 type DonationRequestDb struct {
@@ -24,7 +28,17 @@ func NewDonationRequestRepository(db *gorm.DB) *DonationRequestDb {
 }
 
 func (d DonationRequestDb) Create(donationRequest models.DonationRequest) (models.CreateDonationRequestResponse, error) {
-	err := d.db.Create(&donationRequest).Error
+	donationModel := models.Donation{}
+	donationId := donationRequest.DonationID
+
+	err := d.db.Where("id=?", donationId).First(&donationModel).Error
+	if err != nil {
+		return models.CreateDonationRequestResponse{}, err
+	}
+
+	donationRequest.DonatorID = donationModel.UserID
+
+	err = d.db.Create(&donationRequest).Error
 	if err != nil {
 		return models.CreateDonationRequestResponse{}, err
 	}
@@ -38,9 +52,9 @@ func (d DonationRequestDb) Create(donationRequest models.DonationRequest) (model
 	}, nil
 }
 
-func (d DonationRequestDb) GetAll() ([]models.GetDonationRequestResponse, error) {
+func (d DonationRequestDb) GetAllByUserId(userId string) ([]models.GetDonationRequestResponse, error) {
 	donationRequests := []models.DonationRequest{}
-	err := d.db.Preload("User").Preload("Donation").Preload("Donation.User").Find(&donationRequests).Error
+	err := d.db.Preload("User").Preload("Donation").Preload("Donation.User").Where("user_id=?", userId).Find(&donationRequests).Error
 	if err != nil {
 		return nil, err
 	}
@@ -50,6 +64,7 @@ func (d DonationRequestDb) GetAll() ([]models.GetDonationRequestResponse, error)
 			ID:         v.ID,
 			UserID:     v.UserID,
 			DonationID: v.DonationID,
+			Status:     v.Status,
 			Message:    v.Message,
 			CreatedAt:  v.CreatedAt,
 		}
@@ -64,6 +79,84 @@ func (d DonationRequestDb) GetAll() ([]models.GetDonationRequestResponse, error)
 		response.Donation.Donator.UserName = v.Donation.User.UserName
 		response.Donation.Donator.FullName = v.Donation.User.FullName
 		response.Donation.Donator.PhoneNumber = v.Donation.User.PhoneNumber
+		response.Donation.Donator.ProfilPhotoUrl = v.Donation.User.ProfilPhotoUrl
+
+		response.User.ID = v.User.ID
+		response.User.UserName = v.User.UserName
+		response.User.FullName = v.User.FullName
+		response.User.PhoneNumber = v.User.PhoneNumber
+
+		listDonationRequest = append(listDonationRequest, response)
+	}
+	return listDonationRequest, nil
+}
+
+func (d DonationRequestDb) GetAllByDonationId(donationId string) ([]models.GetDonationRequestResponse, error) {
+	donationRequests := []models.DonationRequest{}
+	err := d.db.Preload("User").Preload("Donation").Preload("Donation.User").Where("donation_id=?", donationId).Find(&donationRequests).Error
+	if err != nil {
+		return nil, err
+	}
+	listDonationRequest := []models.GetDonationRequestResponse{}
+	for _, v := range donationRequests {
+		response := models.GetDonationRequestResponse{
+			ID:         v.ID,
+			UserID:     v.UserID,
+			DonationID: v.DonationID,
+			Status:     v.Status,
+			Message:    v.Message,
+			CreatedAt:  v.CreatedAt,
+		}
+
+		response.Donation.ID = v.Donation.ID
+		response.Donation.Title = v.Donation.Title
+		response.Donation.Description = v.Donation.Description
+		response.Donation.PhotoUrl = v.Donation.PhotoUrl
+		response.Donation.Location = v.Donation.Location
+		response.Donation.CreatedAt = v.Donation.CreatedAt
+		response.Donation.Donator.ID = v.Donation.User.ID
+		response.Donation.Donator.UserName = v.Donation.User.UserName
+		response.Donation.Donator.FullName = v.Donation.User.FullName
+		response.Donation.Donator.PhoneNumber = v.Donation.User.PhoneNumber
+		response.Donation.Donator.ProfilPhotoUrl = v.Donation.User.ProfilPhotoUrl
+
+		response.User.ID = v.User.ID
+		response.User.UserName = v.User.UserName
+		response.User.FullName = v.User.FullName
+		response.User.PhoneNumber = v.User.PhoneNumber
+
+		listDonationRequest = append(listDonationRequest, response)
+	}
+	return listDonationRequest, nil
+}
+func (d DonationRequestDb) GetAllByDonatorId(donatorId string) ([]models.GetDonationRequestResponse, error) {
+	donationRequests := []models.DonationRequest{}
+	err := d.db.Preload("User").Preload("Donation").Preload("Donation.User").Where("donator_id=?", donatorId).Find(&donationRequests).Error
+	if err != nil {
+		return nil, err
+	}
+	listDonationRequest := []models.GetDonationRequestResponse{}
+	for _, v := range donationRequests {
+		response := models.GetDonationRequestResponse{
+			ID:         v.ID,
+			UserID:     v.UserID,
+			DonationID: v.DonationID,
+			Status:     v.Status,
+			Message:    v.Message,
+			CreatedAt:  v.CreatedAt,
+		}
+
+		response.Donation.ID = v.Donation.ID
+		response.Donation.Title = v.Donation.Title
+		response.Donation.Description = v.Donation.Description
+		response.Donation.PhotoUrl = v.Donation.PhotoUrl
+		response.Donation.Location = v.Donation.Location
+		response.Donation.CreatedAt = v.Donation.CreatedAt
+		response.Donation.Donator.ID = v.Donation.User.ID
+		response.Donation.Donator.UserName = v.Donation.User.UserName
+		response.Donation.Donator.FullName = v.Donation.User.FullName
+		response.Donation.Donator.PhoneNumber = v.Donation.User.PhoneNumber
+		response.Donation.Donator.ProfilPhotoUrl = v.Donation.User.ProfilPhotoUrl
 
 		response.User.ID = v.User.ID
 		response.User.UserName = v.User.UserName
@@ -86,6 +179,7 @@ func (d DonationRequestDb) GetById(id string) (models.GetDonationRequestResponse
 		ID:         donationRequest.ID,
 		UserID:     donationRequest.UserID,
 		DonationID: donationRequest.DonationID,
+		Status:     donationRequest.Status,
 		Message:    donationRequest.Message,
 		CreatedAt:  donationRequest.CreatedAt,
 	}
@@ -99,11 +193,13 @@ func (d DonationRequestDb) GetById(id string) (models.GetDonationRequestResponse
 	result.Donation.Donator.UserName = donationRequest.Donation.User.UserName
 	result.Donation.Donator.FullName = donationRequest.Donation.User.FullName
 	result.Donation.Donator.PhoneNumber = donationRequest.Donation.User.PhoneNumber
+	result.Donation.Donator.ProfilPhotoUrl = donationRequest.Donation.User.ProfilPhotoUrl
 
 	result.User.ID = donationRequest.User.ID
 	result.User.UserName = donationRequest.User.UserName
 	result.User.FullName = donationRequest.User.FullName
 	result.User.PhoneNumber = donationRequest.User.PhoneNumber
+
 	return result, nil
 }
 
@@ -114,4 +210,38 @@ func (d DonationRequestDb) GetByDonationId(id string) (models.DonationRequest, e
 		return models.DonationRequest{}, err
 	}
 	return donationRequest, nil
+}
+
+func (d DonationRequestDb) Confirm(id string) error {
+	donationRequest := models.DonationRequest{}
+
+	err := d.db.Where("id=?", id).First(&donationRequest).Error
+	if err != nil {
+		return err
+	}
+
+	err = d.db.Model(&donationRequest).Where("id=?", id).Update("status", "confirmed").Error
+	if err != nil {
+		return err
+	}
+
+	donation := models.Donation{}
+	donationID := donationRequest.DonationID
+
+	err = d.db.Model(&donation).Where("id=?", donationID).Update("status", "taken").Error
+	if err != nil {
+		return err
+	}
+
+	donationHistory := models.DonationHistory{
+		DonationID: donationID,
+		UserID:     donationRequest.UserID,
+	}
+
+	err = d.db.Create(&donationHistory).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

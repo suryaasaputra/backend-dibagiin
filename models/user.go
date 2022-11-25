@@ -26,6 +26,7 @@ type User struct {
 	UpdatedAt       *time.Time        `json:"updated_at"`
 	Donation        []Donation        `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	DonationRequest []DonationRequest `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	DonationHistory []DonationHistory `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 type UserRegisterRequest struct {

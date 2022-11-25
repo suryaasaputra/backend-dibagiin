@@ -58,10 +58,11 @@ type EditDonationResponse struct {
 type GetDonationsResponse struct {
 	Donation
 	Donator struct {
-		ID          string `json:"id"`
-		UserName    string `json:"user_name"`
-		FullName    string `json:"full_name"`
-		PhoneNumber string `json:"phone_number"`
+		ID             string `json:"id"`
+		UserName       string `json:"user_name"`
+		FullName       string `json:"full_name"`
+		PhoneNumber    string `json:"phone_number"`
+		ProfilPhotoUrl string `json:"profil_photo_url"`
 	} `json:"donator"`
 }
 

@@ -18,17 +18,20 @@ func main() {
 	userRepository := repository.NewUserRepository(db)
 	donationRepository := repository.NewDonationRepository(db)
 	donationRequestRepository := repository.NewDonationRequestRepository(db)
+	donationHistoryRepository := repository.NewDonationHistoryRepository(db)
 
 	userController := controllers.NewUserController(userRepository)
 	donationController := controllers.NewDonationController(donationRepository)
 	donationRequestController := controllers.NewDonationRequestController(donationRequestRepository)
+	donationHistoryController := controllers.NewDonationHistoryController(donationHistoryRepository)
 
 	userMiddleware := middlewares.NewUserMiddleware(userRepository)
 	donationMiddleware := middlewares.NewDonationMiddleware(donationRepository)
 	donationRequestMiddleware := middlewares.NewDonationRequestMiddleware(donationRequestRepository)
+	donationHistoryMiddleware := middlewares.NewDonationHistoryMiddleware(donationHistoryRepository)
 
-	controller := controllers.NewController(userController, donationController, donationRequestController)
-	middleware := middlewares.NewMiddleware(userMiddleware, donationMiddleware, donationRequestMiddleware)
+	controller := controllers.NewController(userController, donationController, donationRequestController, donationHistoryController)
+	middleware := middlewares.NewMiddleware(userMiddleware, donationMiddleware, donationRequestMiddleware, donationHistoryMiddleware)
 
 	err = routers.StartServer(controller, middleware)
 	if err != nil {

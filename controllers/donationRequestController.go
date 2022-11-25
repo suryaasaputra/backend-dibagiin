@@ -61,14 +61,41 @@ func (d donationRequestController) Create(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, response)
 }
 
-func (d donationRequestController) GetAll(ctx *gin.Context) {
-	result, err := d.DonationRequestRepository.GetAll()
+func (d donationRequestController) GetAllByUserId(ctx *gin.Context) {
+	userId := ctx.Param("userId")
+	result, err := d.DonationRequestRepository.GetAllByUserId(userId)
 	if err != nil {
 		response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
 		return
 	}
 	response := helpers.GetResponse(false, http.StatusOK, "List of Requested Donation", result)
+	ctx.JSON(http.StatusOK, response)
+}
+
+func (d donationRequestController) GetAllByDonatorId(ctx *gin.Context) {
+	userData := ctx.MustGet("userData").(jwt.MapClaims)
+	userId := fmt.Sprintf("%v", userData["id"])
+
+	result, err := d.DonationRequestRepository.GetAllByDonatorId(userId)
+	if err != nil {
+		response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
+		return
+	}
+	response := helpers.GetResponse(false, http.StatusOK, "Request List", result)
+	ctx.JSON(http.StatusOK, response)
+}
+
+func (d donationRequestController) GetAllByDonationId(ctx *gin.Context) {
+	donationId := ctx.Param("donationId")
+	result, err := d.DonationRequestRepository.GetAllByDonationId(donationId)
+	if err != nil {
+		response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
+		return
+	}
+	response := helpers.GetResponse(false, http.StatusOK, "Request List", result)
 	ctx.JSON(http.StatusOK, response)
 }
 
@@ -81,5 +108,18 @@ func (d donationRequestController) GetById(ctx *gin.Context) {
 		return
 	}
 	response := helpers.GetResponse(false, http.StatusOK, "Success", result)
+	ctx.JSON(http.StatusOK, response)
+}
+
+func (d donationRequestController) Confirm(ctx *gin.Context) {
+	id := ctx.Param("donationRequestId")
+
+	err := d.DonationRequestRepository.Confirm(id)
+	if err != nil {
+		response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
+		return
+	}
+	response := helpers.GetResponse(false, http.StatusOK, "Success", nil)
 	ctx.JSON(http.StatusOK, response)
 }

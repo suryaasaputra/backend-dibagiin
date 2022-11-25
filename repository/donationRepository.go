@@ -59,6 +59,7 @@ func (d DonationDb) GetAll() ([]models.GetDonationsResponse, error) {
 		response.Donator.UserName = v.User.UserName
 		response.Donator.FullName = v.User.FullName
 		response.Donator.PhoneNumber = v.User.PhoneNumber
+		response.Donator.ProfilPhotoUrl = v.User.ProfilPhotoUrl
 		donationList = append(donationList, response)
 	}
 
@@ -79,6 +80,7 @@ func (d DonationDb) GetAllAvailable() ([]models.GetDonationsResponse, error) {
 		response.Donator.ID = v.User.ID
 		response.Donator.UserName = v.User.UserName
 		response.Donator.FullName = v.User.FullName
+		response.Donator.ProfilPhotoUrl = v.User.ProfilPhotoUrl
 		donationList = append(donationList, response)
 	}
 	return donationList, nil
@@ -91,15 +93,17 @@ func (d DonationDb) GetById(id string) (models.GetDonationsResponse, error) {
 		return models.GetDonationsResponse{}, err
 	}
 	var donator = struct {
-		ID          string `json:"id"`
-		UserName    string `json:"user_name"`
-		FullName    string `json:"full_name"`
-		PhoneNumber string `json:"phone_number"`
+		ID             string `json:"id"`
+		UserName       string `json:"user_name"`
+		FullName       string `json:"full_name"`
+		PhoneNumber    string `json:"phone_number"`
+		ProfilPhotoUrl string `json:"profil_photo_url"`
 	}{}
 	donator.ID = donation.User.ID
 	donator.UserName = donation.User.UserName
 	donator.FullName = donation.User.FullName
 	donator.PhoneNumber = donation.User.PhoneNumber
+	donator.ProfilPhotoUrl = donation.User.ProfilPhotoUrl
 	result := models.GetDonationsResponse{
 		Donation: donation,
 		Donator:  donator,
