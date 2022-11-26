@@ -46,7 +46,7 @@ func (d DonationDb) Create(donation models.Donation) (models.CreateDonationRespo
 
 func (d DonationDb) GetAll() ([]models.GetDonationsResponse, error) {
 	donations := []models.Donation{}
-	err := d.db.Preload("User").Preload("DonationRequest").Find(&donations).Error
+	err := d.db.Preload(clause.Associations).Find(&donations).Error
 	if err != nil {
 		return nil, err
 	}
@@ -63,6 +63,14 @@ func (d DonationDb) GetAll() ([]models.GetDonationsResponse, error) {
 		response.Donator.ProfilPhotoUrl = v.User.ProfilPhotoUrl
 		for _, r := range v.DonationRequest {
 			response.Request = append(response.Request, r.UserID)
+		}
+
+		if response.TakerID != nil {
+			response.Taker.ID = v.User.ID
+			response.Taker.UserName = v.Taker.UserName
+			response.Taker.FullName = v.Taker.FullName
+			response.Taker.PhoneNumber = v.Taker.PhoneNumber
+			response.Taker.ProfilPhotoUrl = v.Taker.ProfilPhotoUrl
 		}
 		donationList = append(donationList, response)
 	}

@@ -238,7 +238,7 @@ func (d DonationRequestDb) Confirm(id string) error {
 	donation := models.Donation{}
 	donationID := donationRequest.DonationID
 
-	err = d.db.Model(&donation).Where("id=?", donationID).Update("status", "taken").Error
+	err = d.db.Model(&donation).Where("id=?", donationID).Updates(map[string]interface{}{"status": "taken", "taker_id": donationRequest.UserID}).Error
 	if err != nil {
 		return err
 	}

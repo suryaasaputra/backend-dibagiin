@@ -17,8 +17,10 @@ type Donation struct {
 	PhotoUrl        string            `json:"photo_url" form:"photo_url" gorm:"not null;type:varchar" valid:"required~Photo URL is required"`
 	Location        string            `json:"location" form:"location" gorm:"not null;type:varchar" valid:"required~Location is required"`
 	Status          string            `json:"status" gorm:"not null;type:varchar;default:available"`
+	TakerID         *string           `json:"taker_id" gorm:"type:varchar;"`
 	DonationRequest []DonationRequest `json:"-"`
 	User            *User             `json:"-"`
+	Taker           *User             `json:"-"`
 	CreatedAt       *time.Time        `json:"created_at"`
 	UpdatedAt       *time.Time        `json:"updated_at"`
 }
@@ -66,6 +68,13 @@ type GetDonationsResponse struct {
 		PhoneNumber    string `json:"phone_number"`
 		ProfilPhotoUrl string `json:"profil_photo_url"`
 	} `json:"donator"`
+	Taker struct {
+		ID             string `json:"id,omitempty"`
+		UserName       string `json:"user_name,omitempty"`
+		FullName       string `json:"full_name,omitempty"`
+		PhoneNumber    string `json:"phone_number,omitempty"`
+		ProfilPhotoUrl string `json:"profil_photo_url,omitempty"`
+	} `json:"taker"`
 }
 
 func (d *Donation) BeforeCreate(tx *gorm.DB) error {

@@ -24,7 +24,8 @@ type User struct {
 	ProfilPhotoUrl  string            `gorm:"type:varchar;" json:"profil_photo_url" form:"profil_photo_url" `
 	CreatedAt       *time.Time        `json:"created_at"`
 	UpdatedAt       *time.Time        `json:"updated_at"`
-	Donation        []Donation        `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Donation        []Donation        `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:UserID"`
+	TakenDonation   []Donation        `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;foreignKey:TakerID"`
 	DonationRequest []DonationRequest `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	DonationHistory []DonationHistory `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
@@ -94,6 +95,8 @@ type GetUserResponse struct {
 		Description string     `json:"description"`
 		PhotoUrl    string     `json:"photo_url"`
 		Location    string     `json:"location"`
+		Status      string     `json:"status"`
+		TakerID     string     `json:"taker_id"`
 		CreatedAt   *time.Time `json:"created_at"`
 		UpdatedAt   *time.Time `json:"updated_at"`
 		Donator     struct {
