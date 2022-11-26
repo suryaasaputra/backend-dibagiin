@@ -30,6 +30,7 @@ func (u userMiddleware) Authentication() gin.HandlerFunc {
 			})
 			return
 		}
+
 		ctx.Set("userData", verifyToken)
 		ctx.Next()
 	}

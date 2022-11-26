@@ -3,6 +3,7 @@ package repository
 import (
 	"dibagi/models"
 	"errors"
+	"time"
 
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgerrcode"
@@ -64,28 +65,59 @@ func (u UserDb) GetByEmail(email string) models.User {
 }
 
 func (u UserDb) GetByUserName(userName string) models.GetUserResponse {
-	User := models.User{}
+	user := models.User{}
 
-	u.db.Preload("Donation").Where("user_name =? ", userName).First(&User)
+	u.db.Preload("Donation").Preload("Donation.User").Where("user_name =? ", userName).First(&user)
 	response := models.GetUserResponse{
-		ID:             User.ID,
-		UserName:       User.UserName,
-		Email:          User.Email,
-		FullName:       User.FullName,
-		Gender:         User.Gender,
-		Address:        User.Address,
-		PhoneNumber:    User.PhoneNumber,
-		ProfilPhotoUrl: User.ProfilPhotoUrl,
-		Donation:       User.Donation,
-		Created_at:     User.CreatedAt,
-		Updated_at:     User.UpdatedAt,
+		ID:             user.ID,
+		UserName:       user.UserName,
+		Email:          user.Email,
+		FullName:       user.FullName,
+		Gender:         user.Gender,
+		Address:        user.Address,
+		PhoneNumber:    user.PhoneNumber,
+		ProfilPhotoUrl: user.ProfilPhotoUrl,
+		Created_at:     user.CreatedAt,
+		Updated_at:     user.UpdatedAt,
 	}
+	for _, v := range user.Donation {
+		var donation = struct {
+			ID          string     `json:"id"`
+			Title       string     `json:"title"`
+			Description string     `json:"description"`
+			PhotoUrl    string     `json:"photo_url"`
+			Location    string     `json:"location"`
+			CreatedAt   *time.Time `json:"created_at"`
+			UpdatedAt   *time.Time `json:"updated_at"`
+			Donator     struct {
+				ID             string `json:"id"`
+				UserName       string `json:"user_name"`
+				FullName       string `json:"full_name"`
+				PhoneNumber    string `json:"phone_number"`
+				ProfilPhotoUrl string `json:"profil_photo_url"`
+			} `json:"donator"`
+		}{}
+		donation.ID = v.ID
+		donation.Title = v.Title
+		donation.Description = v.Description
+		donation.PhotoUrl = v.PhotoUrl
+		donation.Location = v.Location
+		donation.CreatedAt = v.CreatedAt
+		donation.UpdatedAt = v.UpdatedAt
+		donation.Donator.ID = v.User.ID
+		donation.Donator.UserName = v.User.UserName
+		donation.Donator.FullName = v.User.FullName
+		donation.Donator.PhoneNumber = v.User.PhoneNumber
+		donation.Donator.ProfilPhotoUrl = v.User.ProfilPhotoUrl
+		response.Donation = append(response.Donation, donation)
+	}
+
 	return response
 }
 func (u UserDb) GetById(id string) models.GetUserResponse {
 	User := models.User{}
 
-	u.db.Preload("Donation").Where("id =? ", id).First(&User)
+	u.db.Where("id =? ", id).First(&User)
 	response := models.GetUserResponse{
 		ID:             User.ID,
 		UserName:       User.UserName,
@@ -95,7 +127,6 @@ func (u UserDb) GetById(id string) models.GetUserResponse {
 		Address:        User.Address,
 		PhoneNumber:    User.PhoneNumber,
 		ProfilPhotoUrl: User.ProfilPhotoUrl,
-		Donation:       User.Donation,
 		Created_at:     User.CreatedAt,
 		Updated_at:     User.UpdatedAt,
 	}

@@ -26,12 +26,11 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 
 		// Token authentication
 		userRouter.Use(mdl.UserMiddleware.Authentication())
+		// get one user data
+		userRouter.GET("/:userName", ctl.UserController.GetUser)
 
 		// check user have access or not
 		userRouter.Use(mdl.UserMiddleware.Authorization())
-
-		// get one user data
-		userRouter.GET("/:userName", ctl.UserController.GetUser)
 
 		//set user profil picture
 		userRouter.PUT("/:userName/ProfilPhoto", ctl.UserController.SetProfilePhoto)
@@ -57,11 +56,11 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 		// get one donation by id
 		donationRouter.GET("/:donationId", ctl.DonationController.GetDonationById)
 
-		//get all request in donation
-		donationRouter.GET("/:donationId/request", ctl.DonationController.GetDonationById)
-
 		// request to claim a donation from another user
-		donationRouter.POST("/request/:donationId", mdl.DonationRequestMiddleware.CheckIfExist(), ctl.DonationRequestController.Create)
+		donationRouter.POST("/:donationId/request", mdl.DonationMiddleware.CheckDonator(), mdl.DonationRequestMiddleware.CheckIfExist(), ctl.DonationRequestController.Create)
+
+		//get all request in donation
+		donationRouter.GET("/:donationId/request", ctl.DonationRequestController.GetAllByDonationId)
 
 		// get all donation request
 		donationRouter.GET("/request", ctl.DonationRequestController.GetAllByDonatorId)
@@ -70,8 +69,11 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 		donationRouter.GET("/request/:donationRequestId", ctl.DonationRequestController.GetById)
 
 		// confirm a request
-		donationRouter.PUT("/request/:donationRequestId", ctl.DonationRequestController.Confirm)
+		donationRouter.POST("/request/:donationRequestId/confirm", mdl.DonationRequestMiddleware.Authorization(), ctl.DonationRequestController.Confirm)
+		// reject a request
+		donationRouter.PUT("/request/:donationRequestId/reject", mdl.DonationRequestMiddleware.Authorization(), ctl.DonationRequestController.Reject)
 
+		// donation authorization
 		donationRouter.Use(mdl.DonationMiddleware.Authorization())
 		// edit donation data
 		donationRouter.PUT("/:donationId", ctl.DonationController.Edit)
@@ -83,10 +85,15 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 
 	requestRouter := r.Group("/request")
 	{
-		// get user donation request
-
-		requestRouter.GET("/:userId", ctl.DonationRequestController.GetAllByUserId)
-
+		requestRouter.Use(mdl.UserMiddleware.Authentication())
+		// get user submitted request
+		requestRouter.GET("", ctl.DonationRequestController.GetAllByUserId)
+	}
+	historyRouter := r.Group("/history")
+	{
+		historyRouter.Use(mdl.UserMiddleware.Authentication())
+		// get history
+		historyRouter.GET("", ctl.DonationHistoryController.GetAllByUserId)
 	}
 
 	var PORT = os.Getenv("PORT")

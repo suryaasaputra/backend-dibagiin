@@ -12,6 +12,7 @@ type IDonationRepository interface {
 	GetAll() ([]models.GetDonationsResponse, error)
 	GetById(string) (models.GetDonationsResponse, error)
 	GetAllAvailable() ([]models.GetDonationsResponse, error)
+	GetAllByLocation(string) ([]models.GetDonationsResponse, error)
 	Edit(string, models.EditDonationRequest) (models.EditDonationResponse, error)
 	Delete(string) error
 }
@@ -45,7 +46,7 @@ func (d DonationDb) Create(donation models.Donation) (models.CreateDonationRespo
 
 func (d DonationDb) GetAll() ([]models.GetDonationsResponse, error) {
 	donations := []models.Donation{}
-	err := d.db.Preload("User").Find(&donations).Error
+	err := d.db.Preload("User").Preload("DonationRequest").Find(&donations).Error
 	if err != nil {
 		return nil, err
 	}
@@ -60,14 +61,38 @@ func (d DonationDb) GetAll() ([]models.GetDonationsResponse, error) {
 		response.Donator.FullName = v.User.FullName
 		response.Donator.PhoneNumber = v.User.PhoneNumber
 		response.Donator.ProfilPhotoUrl = v.User.ProfilPhotoUrl
+		for _, r := range v.DonationRequest {
+			response.Request = append(response.Request, r.UserID)
+		}
 		donationList = append(donationList, response)
 	}
 
 	return donationList, nil
 }
+
 func (d DonationDb) GetAllAvailable() ([]models.GetDonationsResponse, error) {
 	donations := []models.Donation{}
 	err := d.db.Where("status=?", "available").Preload("User").Find(&donations).Error
+	if err != nil {
+		return nil, err
+	}
+
+	donationList := []models.GetDonationsResponse{}
+
+	for _, v := range donations {
+		response := models.GetDonationsResponse{}
+		response.Donation = v
+		response.Donator.ID = v.User.ID
+		response.Donator.UserName = v.User.UserName
+		response.Donator.FullName = v.User.FullName
+		response.Donator.ProfilPhotoUrl = v.User.ProfilPhotoUrl
+		donationList = append(donationList, response)
+	}
+	return donationList, nil
+}
+func (d DonationDb) GetAllByLocation(location string) ([]models.GetDonationsResponse, error) {
+	donations := []models.Donation{}
+	err := d.db.Where("location LIKE", "%"+location+"%").Preload("User").Find(&donations).Error
 	if err != nil {
 		return nil, err
 	}

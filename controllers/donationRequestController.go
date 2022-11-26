@@ -62,7 +62,8 @@ func (d donationRequestController) Create(ctx *gin.Context) {
 }
 
 func (d donationRequestController) GetAllByUserId(ctx *gin.Context) {
-	userId := ctx.Param("userId")
+	userData := ctx.MustGet("userData").(jwt.MapClaims)
+	userId := fmt.Sprintf("%v", userData["id"])
 	result, err := d.DonationRequestRepository.GetAllByUserId(userId)
 	if err != nil {
 		response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
@@ -115,6 +116,18 @@ func (d donationRequestController) Confirm(ctx *gin.Context) {
 	id := ctx.Param("donationRequestId")
 
 	err := d.DonationRequestRepository.Confirm(id)
+	if err != nil {
+		response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
+		return
+	}
+	response := helpers.GetResponse(false, http.StatusOK, "Success", nil)
+	ctx.JSON(http.StatusOK, response)
+}
+func (d donationRequestController) Reject(ctx *gin.Context) {
+	id := ctx.Param("donationRequestId")
+
+	err := d.DonationRequestRepository.Reject(id)
 	if err != nil {
 		response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)

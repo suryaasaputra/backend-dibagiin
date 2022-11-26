@@ -35,9 +35,11 @@ type GetDonationRequestResponse struct {
 	ID         string     `json:"id" `
 	UserID     string     `json:"user_id"`
 	DonationID string     `json:"donation_id"`
+	DonatorID  string     `json:"donator_id"`
 	Status     string     `json:"status"`
 	Message    string     `json:"message"`
 	CreatedAt  *time.Time `json:"created_at"`
+	UpdatedAt  *time.Time `json:"updated_at"`
 	Donation   struct {
 		ID          string     `json:"id"`
 		Title       string     `json:"title"`
@@ -45,6 +47,7 @@ type GetDonationRequestResponse struct {
 		PhotoUrl    string     `json:"photo_url"`
 		Location    string     `json:"location"`
 		CreatedAt   *time.Time `json:"created_at"`
+		UpdatedAt   *time.Time `json:"updated_at"`
 		Donator     struct {
 			ID             string `json:"id"`
 			UserName       string `json:"user_name"`
@@ -54,10 +57,11 @@ type GetDonationRequestResponse struct {
 		} `json:"donator"`
 	} `json:"donation"`
 	User struct {
-		ID          string `json:"id"`
-		UserName    string `json:"user_name"`
-		FullName    string `json:"full_name"`
-		PhoneNumber string `json:"phone_number"`
+		ID             string `json:"id"`
+		UserName       string `json:"user_name"`
+		FullName       string `json:"full_name"`
+		PhoneNumber    string `json:"phone_number"`
+		ProfilPhotoUrl string `json:"profil_photo_url"`
 	} `json:"user"`
 }
 

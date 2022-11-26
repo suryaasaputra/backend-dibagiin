@@ -59,10 +59,20 @@ func (d donationController) Create(ctx *gin.Context) {
 }
 
 func (d donationController) GetAll(ctx *gin.Context) {
-	availableDonation := ctx.Query("available")
+	availability := ctx.Query("available")
+	location := ctx.Query("location")
 
-	if availableDonation == "true" {
+	if availability == "true" {
 		result, err := d.DonationRepository.GetAllAvailable()
+		if err != nil {
+			response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
+			return
+		}
+		response := helpers.GetResponse(false, http.StatusOK, "List of Available Donations", result)
+		ctx.JSON(http.StatusOK, response)
+	} else if location != "" {
+		result, err := d.DonationRepository.GetAllByLocation(location)
 		if err != nil {
 			response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)

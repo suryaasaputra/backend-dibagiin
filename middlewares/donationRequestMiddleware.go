@@ -27,6 +27,11 @@ func (d donationRequestMiddleware) Authorization() gin.HandlerFunc {
 		donationRequestId := ctx.Param("donationRequestId")
 		result, err := d.DonationRequestRepository.GetById(donationRequestId)
 		if err != nil {
+			if err == gorm.ErrRecordNotFound {
+				response := helpers.GetResponse(true, http.StatusNotFound, "Request not found", nil)
+				ctx.AbortWithStatusJSON(http.StatusNotFound, response)
+				return
+			}
 			response := helpers.GetResponse(true, http.StatusInternalServerError, "Something went wrong", nil)
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
 			return
@@ -35,8 +40,8 @@ func (d donationRequestMiddleware) Authorization() gin.HandlerFunc {
 		userData := ctx.MustGet("userData").(jwt.MapClaims)
 		userId := fmt.Sprintf("%v", userData["id"])
 
-		if userId != result.UserID {
-			response := helpers.GetResponse(true, http.StatusUnauthorized, "You are not allowed to Access this data", nil)
+		if userId != result.DonatorID {
+			response := helpers.GetResponse(true, http.StatusUnauthorized, "You are not allowed to access this data", nil)
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
@@ -47,23 +52,34 @@ func (d donationRequestMiddleware) Authorization() gin.HandlerFunc {
 func (d donationRequestMiddleware) CheckIfExist() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		donationId := ctx.Param("donationId")
-		result, err := d.DonationRequestRepository.GetByDonationId(donationId)
+		fmt.Println("masuk")
+		result, err := d.DonationRequestRepository.GetAllByDonationId(donationId)
 		if err != nil {
 			if err == gorm.ErrRecordNotFound {
+				fmt.Println("masuk2")
 				ctx.Next()
 				return
 			}
+			fmt.Println("masuk3")
 			response := helpers.GetResponse(true, http.StatusInternalServerError, "Something went wrong", nil)
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
 			return
 		}
+		fmt.Println("masuk4")
 		userData := ctx.MustGet("userData").(jwt.MapClaims)
 		userId := fmt.Sprintf("%v", userData["id"])
 
-		if userId == result.UserID {
-			response := helpers.GetResponse(true, http.StatusBadRequest, "Request already exist", nil)
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
-			return
+		for _, v := range result {
+			if userId == v.UserID {
+				fmt.Println("masuk5")
+				fmt.Println(userId)
+				fmt.Println(v.UserID)
+				response := helpers.GetResponse(true, http.StatusBadRequest, "Request already exist", nil)
+				ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
+				return
+			}
 		}
+		fmt.Println("masuk6")
+		ctx.Next()
 	}
 }

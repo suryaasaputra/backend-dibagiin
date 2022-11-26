@@ -14,7 +14,7 @@ type IDonationRequestRepository interface {
 	GetByDonationId(string) (models.DonationRequest, error)
 	Create(models.DonationRequest) (models.CreateDonationRequestResponse, error)
 	Confirm(string) error
-	// Reject(string) error
+	Reject(string) error
 }
 
 type DonationRequestDb struct {
@@ -64,9 +64,11 @@ func (d DonationRequestDb) GetAllByUserId(userId string) ([]models.GetDonationRe
 			ID:         v.ID,
 			UserID:     v.UserID,
 			DonationID: v.DonationID,
+			DonatorID:  v.DonatorID,
 			Status:     v.Status,
 			Message:    v.Message,
 			CreatedAt:  v.CreatedAt,
+			UpdatedAt:  v.UpdatedAt,
 		}
 
 		response.Donation.ID = v.Donation.ID
@@ -85,7 +87,7 @@ func (d DonationRequestDb) GetAllByUserId(userId string) ([]models.GetDonationRe
 		response.User.UserName = v.User.UserName
 		response.User.FullName = v.User.FullName
 		response.User.PhoneNumber = v.User.PhoneNumber
-
+		response.User.ProfilPhotoUrl = v.User.ProfilPhotoUrl
 		listDonationRequest = append(listDonationRequest, response)
 	}
 	return listDonationRequest, nil
@@ -103,9 +105,11 @@ func (d DonationRequestDb) GetAllByDonationId(donationId string) ([]models.GetDo
 			ID:         v.ID,
 			UserID:     v.UserID,
 			DonationID: v.DonationID,
+			DonatorID:  v.DonatorID,
 			Status:     v.Status,
 			Message:    v.Message,
 			CreatedAt:  v.CreatedAt,
+			UpdatedAt:  v.UpdatedAt,
 		}
 
 		response.Donation.ID = v.Donation.ID
@@ -124,7 +128,7 @@ func (d DonationRequestDb) GetAllByDonationId(donationId string) ([]models.GetDo
 		response.User.UserName = v.User.UserName
 		response.User.FullName = v.User.FullName
 		response.User.PhoneNumber = v.User.PhoneNumber
-
+		response.User.ProfilPhotoUrl = v.User.ProfilPhotoUrl
 		listDonationRequest = append(listDonationRequest, response)
 	}
 	return listDonationRequest, nil
@@ -141,9 +145,11 @@ func (d DonationRequestDb) GetAllByDonatorId(donatorId string) ([]models.GetDona
 			ID:         v.ID,
 			UserID:     v.UserID,
 			DonationID: v.DonationID,
+			DonatorID:  v.DonatorID,
 			Status:     v.Status,
 			Message:    v.Message,
 			CreatedAt:  v.CreatedAt,
+			UpdatedAt:  v.UpdatedAt,
 		}
 
 		response.Donation.ID = v.Donation.ID
@@ -162,6 +168,7 @@ func (d DonationRequestDb) GetAllByDonatorId(donatorId string) ([]models.GetDona
 		response.User.UserName = v.User.UserName
 		response.User.FullName = v.User.FullName
 		response.User.PhoneNumber = v.User.PhoneNumber
+		response.User.ProfilPhotoUrl = v.User.ProfilPhotoUrl
 
 		listDonationRequest = append(listDonationRequest, response)
 	}
@@ -179,9 +186,11 @@ func (d DonationRequestDb) GetById(id string) (models.GetDonationRequestResponse
 		ID:         donationRequest.ID,
 		UserID:     donationRequest.UserID,
 		DonationID: donationRequest.DonationID,
+		DonatorID:  donationRequest.DonatorID,
 		Status:     donationRequest.Status,
 		Message:    donationRequest.Message,
 		CreatedAt:  donationRequest.CreatedAt,
+		UpdatedAt:  donationRequest.UpdatedAt,
 	}
 	result.Donation.ID = donationRequest.Donation.ID
 	result.Donation.Title = donationRequest.Donation.Title
@@ -199,6 +208,7 @@ func (d DonationRequestDb) GetById(id string) (models.GetDonationRequestResponse
 	result.User.UserName = donationRequest.User.UserName
 	result.User.FullName = donationRequest.User.FullName
 	result.User.PhoneNumber = donationRequest.User.PhoneNumber
+	result.User.ProfilPhotoUrl = donationRequest.User.ProfilPhotoUrl
 
 	return result, nil
 }
@@ -243,5 +253,19 @@ func (d DonationRequestDb) Confirm(id string) error {
 		return err
 	}
 
+	return nil
+}
+func (d DonationRequestDb) Reject(id string) error {
+	donationRequest := models.DonationRequest{}
+
+	err := d.db.Where("id=?", id).First(&donationRequest).Error
+	if err != nil {
+		return err
+	}
+
+	err = d.db.Model(&donationRequest).Where("id=?", id).Update("status", "rejected").Error
+	if err != nil {
+		return err
+	}
 	return nil
 }

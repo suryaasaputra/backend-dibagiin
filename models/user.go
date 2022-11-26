@@ -80,17 +80,33 @@ type EditUserResponse struct {
 }
 
 type GetUserResponse struct {
-	ID             string     `json:"id"`
-	Email          string     `json:"email"`
-	UserName       string     `json:"user_name"`
-	FullName       string     `json:"full_name"`
-	Gender         string     `json:"gender"`
-	PhoneNumber    string     `json:"phone_number"`
-	Address        string     `json:"address"`
-	ProfilPhotoUrl string     `json:"profil_photo_url"`
-	Donation       []Donation `json:"donations"`
-	Created_at     *time.Time `json:"created_at"`
-	Updated_at     *time.Time `json:"updated_at"`
+	ID             string `json:"id"`
+	Email          string `json:"email"`
+	UserName       string `json:"user_name"`
+	FullName       string `json:"full_name"`
+	Gender         string `json:"gender"`
+	PhoneNumber    string `json:"phone_number"`
+	Address        string `json:"address"`
+	ProfilPhotoUrl string `json:"profil_photo_url"`
+	Donation       []struct {
+		ID          string     `json:"id"`
+		Title       string     `json:"title"`
+		Description string     `json:"description"`
+		PhotoUrl    string     `json:"photo_url"`
+		Location    string     `json:"location"`
+		CreatedAt   *time.Time `json:"created_at"`
+		UpdatedAt   *time.Time `json:"updated_at"`
+		Donator     struct {
+			ID             string `json:"id"`
+			UserName       string `json:"user_name"`
+			FullName       string `json:"full_name"`
+			PhoneNumber    string `json:"phone_number"`
+			ProfilPhotoUrl string `json:"profil_photo_url"`
+		} `json:"donator"`
+	} `json:"donation"`
+
+	Created_at *time.Time `json:"created_at"`
+	Updated_at *time.Time `json:"updated_at"`
 }
 
 // Hooks model user
