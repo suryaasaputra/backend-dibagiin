@@ -24,6 +24,6 @@ func NewController(userController *userController, donationController *donationC
 
 func (c Controller) HomeController(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
-		"message": "welcome",
+		"message": "welcome to dibagiin",
 	})
 }
