@@ -12,7 +12,12 @@ import (
 func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 
 	r := gin.Default()
-	r.Use(cors.Default())
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "PATCH"}
+	config.AllowHeaders = []string{"Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization", "Access-Control-Allow-Headers", "Access-Control-Request-Method", "Access-Control-Request-Headers"}
+	config.AllowCredentials = true
+	r.Use(cors.New(config))
 	r.GET("/", ctl.HomeController)
 
 	//manual login
