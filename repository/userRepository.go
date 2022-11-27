@@ -3,6 +3,7 @@ package repository
 import (
 	"dibagi/models"
 	"errors"
+	"time"
 
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgerrcode"
@@ -11,13 +12,13 @@ import (
 )
 
 type IUserRepository interface {
-	RegisterUser(models.User) (models.CreateUserResponse, error)
-	EditUser(string, models.User) (models.EditUserResponse, error)
-	GetUserByEmail(string) models.User
-	GetUserByUserName(string) models.GetUserResponse
-	GetUserById(string) models.GetUserResponse
+	Create(models.User) (models.CreateUserResponse, error)
+	Edit(string, models.User) (models.EditUserResponse, error)
+	GetByEmail(string) models.User
+	GetByUserName(string) models.GetUserResponse
+	GetById(string) models.GetUserResponse
 	SetProfilePhoto(string, string) error
-	DeleteUser(string) error
+	Delete(string) error
 }
 
 type UserDb struct {
@@ -30,7 +31,7 @@ func NewUserRepository(db *gorm.DB) *UserDb {
 	}
 }
 
-func (u UserDb) RegisterUser(user models.User) (models.CreateUserResponse, error) {
+func (u UserDb) Create(user models.User) (models.CreateUserResponse, error) {
 	err := u.db.Create(&user).Error
 
 	if err != nil {
@@ -55,7 +56,7 @@ func (u UserDb) RegisterUser(user models.User) (models.CreateUserResponse, error
 	}, nil
 }
 
-func (u UserDb) GetUserByEmail(email string) models.User {
+func (u UserDb) GetByEmail(email string) models.User {
 	User := models.User{}
 
 	u.db.Where("email =? ", email).First(&User)
@@ -63,10 +64,64 @@ func (u UserDb) GetUserByEmail(email string) models.User {
 	return User
 }
 
-func (u UserDb) GetUserByUserName(userName string) models.GetUserResponse {
+func (u UserDb) GetByUserName(userName string) models.GetUserResponse {
+	user := models.User{}
+
+	u.db.Preload("Donation").Preload("Donation.User").Where("user_name =? ", userName).First(&user)
+	response := models.GetUserResponse{
+		ID:             user.ID,
+		UserName:       user.UserName,
+		Email:          user.Email,
+		FullName:       user.FullName,
+		Gender:         user.Gender,
+		Address:        user.Address,
+		PhoneNumber:    user.PhoneNumber,
+		ProfilPhotoUrl: user.ProfilPhotoUrl,
+		Created_at:     user.CreatedAt,
+		Updated_at:     user.UpdatedAt,
+	}
+	for _, v := range user.Donation {
+		var donation = struct {
+			ID          string     `json:"id"`
+			Title       string     `json:"title"`
+			Description string     `json:"description"`
+			PhotoUrl    string     `json:"photo_url"`
+			Location    string     `json:"location"`
+			Status      string     `json:"status"`
+			TakerID     string     `json:"taker_id"`
+			CreatedAt   *time.Time `json:"created_at"`
+			UpdatedAt   *time.Time `json:"updated_at"`
+			Donator     struct {
+				ID             string `json:"id"`
+				UserName       string `json:"user_name"`
+				FullName       string `json:"full_name"`
+				PhoneNumber    string `json:"phone_number"`
+				ProfilPhotoUrl string `json:"profil_photo_url"`
+			} `json:"donator"`
+		}{}
+		donation.ID = v.ID
+		donation.Title = v.Title
+		donation.Description = v.Description
+		donation.PhotoUrl = v.PhotoUrl
+		donation.Location = v.Location
+		donation.Status = v.Status
+		donation.TakerID = *v.TakerID
+		donation.CreatedAt = v.CreatedAt
+		donation.UpdatedAt = v.UpdatedAt
+		donation.Donator.ID = v.User.ID
+		donation.Donator.UserName = v.User.UserName
+		donation.Donator.FullName = v.User.FullName
+		donation.Donator.PhoneNumber = v.User.PhoneNumber
+		donation.Donator.ProfilPhotoUrl = v.User.ProfilPhotoUrl
+		response.Donation = append(response.Donation, donation)
+	}
+
+	return response
+}
+func (u UserDb) GetById(id string) models.GetUserResponse {
 	User := models.User{}
 
-	u.db.Preload("Donation").Where("user_name =? ", userName).First(&User)
+	u.db.Where("id =? ", id).First(&User)
 	response := models.GetUserResponse{
 		ID:             User.ID,
 		UserName:       User.UserName,
@@ -76,33 +131,13 @@ func (u UserDb) GetUserByUserName(userName string) models.GetUserResponse {
 		Address:        User.Address,
 		PhoneNumber:    User.PhoneNumber,
 		ProfilPhotoUrl: User.ProfilPhotoUrl,
-		Donation:       User.Donation,
-		Created_at:     User.CreatedAt,
-		Updated_at:     User.UpdatedAt,
-	}
-	return response
-}
-func (u UserDb) GetUserById(id string) models.GetUserResponse {
-	User := models.User{}
-
-	u.db.Preload("Donation").Where("id =? ", id).First(&User)
-	response := models.GetUserResponse{
-		ID:             User.ID,
-		UserName:       User.UserName,
-		Email:          User.Email,
-		FullName:       User.FullName,
-		Gender:         User.Gender,
-		Address:        User.Address,
-		PhoneNumber:    User.PhoneNumber,
-		ProfilPhotoUrl: User.ProfilPhotoUrl,
-		Donation:       User.Donation,
 		Created_at:     User.CreatedAt,
 		Updated_at:     User.UpdatedAt,
 	}
 	return response
 }
 
-func (u UserDb) EditUser(username string, newUserData models.User) (models.EditUserResponse, error) {
+func (u UserDb) Edit(username string, newUserData models.User) (models.EditUserResponse, error) {
 	User := models.User{}
 	err := u.db.Model(&User).Clauses(clause.Returning{}).Where("user_name=?", username).Updates(models.User{
 		Email:       newUserData.Email,
@@ -143,7 +178,7 @@ func (u UserDb) SetProfilePhoto(id, photoUrl string) error {
 	return nil
 }
 
-func (u UserDb) DeleteUser(id string) error {
+func (u UserDb) Delete(id string) error {
 	User := models.User{
 		ID: id,
 	}
