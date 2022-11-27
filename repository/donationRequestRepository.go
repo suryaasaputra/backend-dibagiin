@@ -46,6 +46,7 @@ func (d DonationRequestDb) Create(donationRequest models.DonationRequest) (model
 		ID:         donationRequest.ID,
 		UserID:     donationRequest.UserID,
 		DonationID: donationRequest.DonationID,
+		DonatorID:  donationRequest.DonatorID,
 		Message:    donationRequest.Message,
 		Status:     donationRequest.Status,
 		CreatedAt:  donationRequest.CreatedAt,
@@ -54,7 +55,7 @@ func (d DonationRequestDb) Create(donationRequest models.DonationRequest) (model
 
 func (d DonationRequestDb) GetAllByUserId(userId string) ([]models.GetDonationRequestResponse, error) {
 	donationRequests := []models.DonationRequest{}
-	err := d.db.Preload("User").Preload("Donation").Preload("Donation.User").Where("user_id=?", userId).Find(&donationRequests).Error
+	err := d.db.Preload("User").Preload("Donator").Preload("Donation").Where("user_id=?", userId).Find(&donationRequests).Error
 	if err != nil {
 		return nil, err
 	}
@@ -77,11 +78,13 @@ func (d DonationRequestDb) GetAllByUserId(userId string) ([]models.GetDonationRe
 		response.Donation.PhotoUrl = v.Donation.PhotoUrl
 		response.Donation.Location = v.Donation.Location
 		response.Donation.CreatedAt = v.Donation.CreatedAt
-		response.Donation.Donator.ID = v.Donation.User.ID
-		response.Donation.Donator.UserName = v.Donation.User.UserName
-		response.Donation.Donator.FullName = v.Donation.User.FullName
-		response.Donation.Donator.PhoneNumber = v.Donation.User.PhoneNumber
-		response.Donation.Donator.ProfilPhotoUrl = v.Donation.User.ProfilPhotoUrl
+		response.Donation.UpdatedAt = v.Donation.UpdatedAt
+
+		response.Donator.ID = v.Donator.ID
+		response.Donator.UserName = v.Donator.UserName
+		response.Donator.FullName = v.Donator.FullName
+		response.Donator.PhoneNumber = v.Donator.PhoneNumber
+		response.Donator.ProfilPhotoUrl = v.Donator.ProfilPhotoUrl
 
 		response.User.ID = v.User.ID
 		response.User.UserName = v.User.UserName
@@ -95,7 +98,7 @@ func (d DonationRequestDb) GetAllByUserId(userId string) ([]models.GetDonationRe
 
 func (d DonationRequestDb) GetAllByDonationId(donationId string) ([]models.GetDonationRequestResponse, error) {
 	donationRequests := []models.DonationRequest{}
-	err := d.db.Preload("User").Preload("Donation").Preload("Donation.User").Where("donation_id=?", donationId).Find(&donationRequests).Error
+	err := d.db.Preload("User").Preload("Donator").Preload("Donation").Where("donation_id=?", donationId).Find(&donationRequests).Error
 	if err != nil {
 		return nil, err
 	}
@@ -118,11 +121,13 @@ func (d DonationRequestDb) GetAllByDonationId(donationId string) ([]models.GetDo
 		response.Donation.PhotoUrl = v.Donation.PhotoUrl
 		response.Donation.Location = v.Donation.Location
 		response.Donation.CreatedAt = v.Donation.CreatedAt
-		response.Donation.Donator.ID = v.Donation.User.ID
-		response.Donation.Donator.UserName = v.Donation.User.UserName
-		response.Donation.Donator.FullName = v.Donation.User.FullName
-		response.Donation.Donator.PhoneNumber = v.Donation.User.PhoneNumber
-		response.Donation.Donator.ProfilPhotoUrl = v.Donation.User.ProfilPhotoUrl
+		response.Donation.UpdatedAt = v.Donation.UpdatedAt
+
+		response.Donator.ID = v.Donator.ID
+		response.Donator.UserName = v.Donator.UserName
+		response.Donator.FullName = v.Donator.FullName
+		response.Donator.PhoneNumber = v.Donator.PhoneNumber
+		response.Donator.ProfilPhotoUrl = v.Donator.ProfilPhotoUrl
 
 		response.User.ID = v.User.ID
 		response.User.UserName = v.User.UserName
@@ -135,7 +140,7 @@ func (d DonationRequestDb) GetAllByDonationId(donationId string) ([]models.GetDo
 }
 func (d DonationRequestDb) GetAllByDonatorId(donatorId string) ([]models.GetDonationRequestResponse, error) {
 	donationRequests := []models.DonationRequest{}
-	err := d.db.Preload("User").Preload("Donation").Preload("Donation.User").Where("donator_id=?", donatorId).Find(&donationRequests).Error
+	err := d.db.Preload("User").Preload("Donator").Preload("Donation").Where("donator_id=?", donatorId).Find(&donationRequests).Error
 	if err != nil {
 		return nil, err
 	}
@@ -158,11 +163,13 @@ func (d DonationRequestDb) GetAllByDonatorId(donatorId string) ([]models.GetDona
 		response.Donation.PhotoUrl = v.Donation.PhotoUrl
 		response.Donation.Location = v.Donation.Location
 		response.Donation.CreatedAt = v.Donation.CreatedAt
-		response.Donation.Donator.ID = v.Donation.User.ID
-		response.Donation.Donator.UserName = v.Donation.User.UserName
-		response.Donation.Donator.FullName = v.Donation.User.FullName
-		response.Donation.Donator.PhoneNumber = v.Donation.User.PhoneNumber
-		response.Donation.Donator.ProfilPhotoUrl = v.Donation.User.ProfilPhotoUrl
+		response.Donation.UpdatedAt = v.Donation.UpdatedAt
+
+		response.Donator.ID = v.Donator.ID
+		response.Donator.UserName = v.Donator.UserName
+		response.Donator.FullName = v.Donator.FullName
+		response.Donator.PhoneNumber = v.Donator.PhoneNumber
+		response.Donator.ProfilPhotoUrl = v.Donator.ProfilPhotoUrl
 
 		response.User.ID = v.User.ID
 		response.User.UserName = v.User.UserName
@@ -177,7 +184,7 @@ func (d DonationRequestDb) GetAllByDonatorId(donatorId string) ([]models.GetDona
 
 func (d DonationRequestDb) GetById(id string) (models.GetDonationRequestResponse, error) {
 	donationRequest := models.DonationRequest{}
-	err := d.db.Where("id=?", id).Preload("User").Preload("Donation").Preload("Donation.User").First(&donationRequest).Error
+	err := d.db.Preload("User").Preload("Donator").Preload("Donation").Where("id=?", id).First(&donationRequest).Error
 	if err != nil {
 		return models.GetDonationRequestResponse{}, err
 	}
@@ -198,11 +205,13 @@ func (d DonationRequestDb) GetById(id string) (models.GetDonationRequestResponse
 	result.Donation.PhotoUrl = donationRequest.Donation.PhotoUrl
 	result.Donation.Location = donationRequest.Donation.Location
 	result.Donation.CreatedAt = donationRequest.Donation.CreatedAt
-	result.Donation.Donator.ID = donationRequest.Donation.User.ID
-	result.Donation.Donator.UserName = donationRequest.Donation.User.UserName
-	result.Donation.Donator.FullName = donationRequest.Donation.User.FullName
-	result.Donation.Donator.PhoneNumber = donationRequest.Donation.User.PhoneNumber
-	result.Donation.Donator.ProfilPhotoUrl = donationRequest.Donation.User.ProfilPhotoUrl
+	result.Donation.UpdatedAt = donationRequest.Donation.UpdatedAt
+
+	result.Donator.ID = donationRequest.Donator.ID
+	result.Donator.UserName = donationRequest.Donator.UserName
+	result.Donator.FullName = donationRequest.Donator.FullName
+	result.Donator.PhoneNumber = donationRequest.Donator.PhoneNumber
+	result.Donator.ProfilPhotoUrl = donationRequest.Donator.ProfilPhotoUrl
 
 	result.User.ID = donationRequest.User.ID
 	result.User.UserName = donationRequest.User.UserName

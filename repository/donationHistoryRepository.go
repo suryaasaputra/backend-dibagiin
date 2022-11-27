@@ -42,6 +42,8 @@ func (d DonationHistoryDB) GetAllByUserId(userId string) ([]models.GetDonationHi
 		response.Donation.PhotoUrl = v.Donation.PhotoUrl
 		response.Donation.Location = v.Donation.Location
 		response.Donation.CreatedAt = v.Donation.CreatedAt
+		response.Donation.UpdatedAt = v.Donation.UpdatedAt
+
 		response.Donation.Donator.ID = v.Donation.User.ID
 		response.Donation.Donator.UserName = v.Donation.User.UserName
 		response.Donation.Donator.FullName = v.Donation.User.FullName

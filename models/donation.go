@@ -18,7 +18,7 @@ type Donation struct {
 	Location        string            `json:"location" form:"location" gorm:"not null;type:varchar" valid:"required~Location is required"`
 	Status          string            `json:"status" gorm:"not null;type:varchar;default:available"`
 	TakerID         *string           `json:"taker_id" gorm:"type:varchar;"`
-	DonationRequest []DonationRequest `json:"-"`
+	DonationRequest []DonationRequest `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	User            *User             `json:"-"`
 	Taker           *User             `json:"-"`
 	CreatedAt       *time.Time        `json:"created_at"`

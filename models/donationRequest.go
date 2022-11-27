@@ -16,6 +16,7 @@ type DonationRequest struct {
 	Message    string     `json:"message" gorm:"not null;" valid:"required~Message is required" `
 	Status     string     `json:"status" gorm:"not null;type:varchar;default:requested"`
 	User       *User      `json:"-"`
+	Donator    *User      `json:"-"`
 	Donation   *Donation  `json:"-"`
 	CreatedAt  *time.Time `json:"created_at"`
 	UpdatedAt  *time.Time `json:"updated_at"`
@@ -27,6 +28,7 @@ type CreateDonationRequestResponse struct {
 	ID         string     `json:"id" `
 	UserID     string     `json:"user_id"`
 	DonationID string     `json:"donation_id"`
+	DonatorID  string     `json:"donator_id"`
 	Message    string     `json:"message"`
 	Status     string     `json:"status"`
 	CreatedAt  *time.Time `json:"created_at"`
@@ -40,7 +42,14 @@ type GetDonationRequestResponse struct {
 	Message    string     `json:"message"`
 	CreatedAt  *time.Time `json:"created_at"`
 	UpdatedAt  *time.Time `json:"updated_at"`
-	Donation   struct {
+	Donator    struct {
+		ID             string `json:"id"`
+		UserName       string `json:"user_name"`
+		FullName       string `json:"full_name"`
+		PhoneNumber    string `json:"phone_number"`
+		ProfilPhotoUrl string `json:"profil_photo_url"`
+	} `json:"donator"`
+	Donation struct {
 		ID          string     `json:"id"`
 		Title       string     `json:"title"`
 		Description string     `json:"description"`
@@ -48,13 +57,6 @@ type GetDonationRequestResponse struct {
 		Location    string     `json:"location"`
 		CreatedAt   *time.Time `json:"created_at"`
 		UpdatedAt   *time.Time `json:"updated_at"`
-		Donator     struct {
-			ID             string `json:"id"`
-			UserName       string `json:"user_name"`
-			FullName       string `json:"full_name"`
-			PhoneNumber    string `json:"phone_number"`
-			ProfilPhotoUrl string `json:"profil_photo_url"`
-		} `json:"donator"`
 	} `json:"donation"`
 	User struct {
 		ID             string `json:"id"`
