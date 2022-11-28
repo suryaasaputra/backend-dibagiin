@@ -88,7 +88,7 @@ func (u UserDb) GetByUserName(userName string) models.GetUserResponse {
 			PhotoUrl    string     `json:"photo_url"`
 			Location    string     `json:"location"`
 			Status      string     `json:"status"`
-			TakerID     string     `json:"taker_id"`
+			TakerID     *string    `json:"taker_id"`
 			CreatedAt   *time.Time `json:"created_at"`
 			UpdatedAt   *time.Time `json:"updated_at"`
 			Donator     struct {
@@ -105,7 +105,7 @@ func (u UserDb) GetByUserName(userName string) models.GetUserResponse {
 		donation.PhotoUrl = v.PhotoUrl
 		donation.Location = v.Location
 		donation.Status = v.Status
-		donation.TakerID = *v.TakerID
+		donation.TakerID = v.TakerID
 		donation.CreatedAt = v.CreatedAt
 		donation.UpdatedAt = v.UpdatedAt
 		donation.Donator.ID = v.User.ID

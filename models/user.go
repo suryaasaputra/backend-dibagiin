@@ -97,7 +97,7 @@ type GetUserResponse struct {
 		PhotoUrl    string     `json:"photo_url"`
 		Location    string     `json:"location"`
 		Status      string     `json:"status"`
-		TakerID     string     `json:"taker_id"`
+		TakerID     *string    `json:"taker_id"`
 		CreatedAt   *time.Time `json:"created_at"`
 		UpdatedAt   *time.Time `json:"updated_at"`
 		Donator     struct {
