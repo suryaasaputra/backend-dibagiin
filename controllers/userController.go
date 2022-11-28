@@ -206,7 +206,9 @@ func (u userController) SetProfilePhoto(ctx *gin.Context) {
 		return
 	}
 
-	response := helpers.GetResponse(false, http.StatusOK, "Success Update Profile Photo", nil)
+	response := helpers.GetResponse(false, http.StatusOK, "Success Update Profile Photo", gin.H{
+		"profil_photo_url": profilPhotoUrl,
+	})
 	ctx.JSON(http.StatusOK, response)
 }
 
