@@ -54,7 +54,7 @@ func (d donationMiddleware) CheckDonator() gin.HandlerFunc {
 			return
 		}
 
-		if result.Status != "available" {
+		if result.Status != "Tersedia" {
 			response := helpers.GetResponse(true, http.StatusBadRequest, "Donation is already taken by other user", nil)
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
 			return
