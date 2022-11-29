@@ -55,7 +55,7 @@ func (d DonationRequestDb) Create(donationRequest models.DonationRequest) (model
 
 func (d DonationRequestDb) GetAllByUserId(userId string) ([]models.GetDonationRequestResponse, error) {
 	donationRequests := []models.DonationRequest{}
-	err := d.db.Preload("User").Preload("Donator").Preload("Donation").Where("user_id=?", userId).Find(&donationRequests).Error
+	err := d.db.Preload("User").Preload("Donator").Preload("Donation").Where("user_id=?", userId).Order("created_at desc").Find(&donationRequests).Error
 	if err != nil {
 		return nil, err
 	}
@@ -140,7 +140,7 @@ func (d DonationRequestDb) GetAllByDonationId(donationId string) ([]models.GetDo
 }
 func (d DonationRequestDb) GetAllByDonatorId(donatorId string) ([]models.GetDonationRequestResponse, error) {
 	donationRequests := []models.DonationRequest{}
-	err := d.db.Preload("User").Preload("Donator").Preload("Donation").Where("donator_id=?", donatorId).Find(&donationRequests).Error
+	err := d.db.Preload("User").Preload("Donator").Preload("Donation").Where("donator_id=?", donatorId).Order("created_at desc").Find(&donationRequests).Error
 	if err != nil {
 		return nil, err
 	}
@@ -239,7 +239,7 @@ func (d DonationRequestDb) Confirm(id string) error {
 		return err
 	}
 
-	err = d.db.Model(&donationRequest).Where("id=?", id).Update("status", "confirmed").Error
+	err = d.db.Model(&donationRequest).Where("id=?", id).Update("status", "Dikonfirmasi").Error
 	if err != nil {
 		return err
 	}
@@ -247,7 +247,7 @@ func (d DonationRequestDb) Confirm(id string) error {
 	donation := models.Donation{}
 	donationID := donationRequest.DonationID
 
-	err = d.db.Model(&donation).Where("id=?", donationID).Updates(map[string]interface{}{"status": "taken", "taker_id": donationRequest.UserID}).Error
+	err = d.db.Model(&donation).Where("id=?", donationID).Updates(map[string]interface{}{"status": "Sudah diambil", "taker_id": donationRequest.UserID}).Error
 	if err != nil {
 		return err
 	}
@@ -272,7 +272,7 @@ func (d DonationRequestDb) Reject(id string) error {
 		return err
 	}
 
-	err = d.db.Model(&donationRequest).Where("id=?", id).Update("status", "rejected").Error
+	err = d.db.Model(&donationRequest).Where("id=?", id).Update("status", "Ditolak").Error
 	if err != nil {
 		return err
 	}

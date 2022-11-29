@@ -46,7 +46,7 @@ func (d DonationDb) Create(donation models.Donation) (models.CreateDonationRespo
 
 func (d DonationDb) GetAll() ([]models.GetDonationsResponse, error) {
 	donations := []models.Donation{}
-	err := d.db.Preload(clause.Associations).Find(&donations).Error
+	err := d.db.Preload(clause.Associations).Order("created_at desc").Find(&donations).Error
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func (d DonationDb) GetAll() ([]models.GetDonationsResponse, error) {
 
 func (d DonationDb) GetAllAvailable() ([]models.GetDonationsResponse, error) {
 	donations := []models.Donation{}
-	err := d.db.Where("status=?", "available").Preload("User").Find(&donations).Error
+	err := d.db.Where("status=?", "Tersedia").Preload("User").Find(&donations).Error
 	if err != nil {
 		return nil, err
 	}

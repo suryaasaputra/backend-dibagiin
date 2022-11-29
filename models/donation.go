@@ -16,7 +16,7 @@ type Donation struct {
 	Description     string            `json:"description" form:"description" gorm:"not null;type:varchar" valid:"required~Description is required"`
 	PhotoUrl        string            `json:"photo_url" form:"photo_url" gorm:"not null;type:varchar" valid:"required~Photo URL is required"`
 	Location        string            `json:"location" form:"location" gorm:"not null;type:varchar" valid:"required~Location is required"`
-	Status          string            `json:"status" gorm:"not null;type:varchar;default:available"`
+	Status          string            `json:"status" gorm:"not null;type:varchar;default:Tersedia"`
 	TakerID         *string           `json:"taker_id" gorm:"type:varchar;"`
 	DonationRequest []DonationRequest `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	User            *User             `json:"-"`
