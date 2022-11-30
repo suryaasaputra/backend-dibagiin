@@ -29,6 +29,6 @@ func (d donationHistoryController) GetAllByUserId(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
 		return
 	}
-	response := helpers.GetResponse(false, http.StatusOK, "List of Claimed Donation", result)
+	response := helpers.GetResponse(false, http.StatusOK, "Daftar donasi yang diterima", result)
 	ctx.JSON(http.StatusOK, response)
 }

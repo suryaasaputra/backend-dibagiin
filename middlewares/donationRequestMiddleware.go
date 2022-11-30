@@ -28,11 +28,11 @@ func (d donationRequestMiddleware) Authorization() gin.HandlerFunc {
 		result, err := d.DonationRequestRepository.GetById(donationRequestId)
 		if err != nil {
 			if err == gorm.ErrRecordNotFound {
-				response := helpers.GetResponse(true, http.StatusNotFound, "Request not found", nil)
+				response := helpers.GetResponse(true, http.StatusNotFound, "Permintaan tidak ditemukan", nil)
 				ctx.AbortWithStatusJSON(http.StatusNotFound, response)
 				return
 			}
-			response := helpers.GetResponse(true, http.StatusInternalServerError, "Something went wrong", nil)
+			response := helpers.GetResponse(true, http.StatusInternalServerError, "Terjadi kesalahan", nil)
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
 			return
 		}
@@ -41,7 +41,7 @@ func (d donationRequestMiddleware) Authorization() gin.HandlerFunc {
 		userId := fmt.Sprintf("%v", userData["id"])
 
 		if userId != result.DonatorID {
-			response := helpers.GetResponse(true, http.StatusUnauthorized, "You are not allowed to access this data", nil)
+			response := helpers.GetResponse(true, http.StatusUnauthorized, "Akses ditolak, Anda tidak diizinkan mengubah data", nil)
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
@@ -58,7 +58,7 @@ func (d donationRequestMiddleware) CheckIfExist() gin.HandlerFunc {
 				ctx.Next()
 				return
 			}
-			response := helpers.GetResponse(true, http.StatusInternalServerError, "Something went wrong", nil)
+			response := helpers.GetResponse(true, http.StatusInternalServerError, "Terjadi Kesalahan", nil)
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
 			return
 		}
@@ -67,7 +67,7 @@ func (d donationRequestMiddleware) CheckIfExist() gin.HandlerFunc {
 
 		for _, v := range result {
 			if userId == v.UserID {
-				response := helpers.GetResponse(true, http.StatusBadRequest, "Request already exist", nil)
+				response := helpers.GetResponse(true, http.StatusBadRequest, "Anda sudah membuat permintaan pada donasi ini", nil)
 				ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
 				return
 			}

@@ -27,7 +27,7 @@ func (d donationController) Create(ctx *gin.Context) {
 	id := fmt.Sprintf("%v", userData["id"])
 	err := ctx.ShouldBind(&request)
 	if err != nil {
-		response := helpers.GetResponse(true, http.StatusBadRequest, "error binding request", nil)
+		response := helpers.GetResponse(true, http.StatusBadRequest, "request tidak valid", nil)
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
 		return
 	}
@@ -54,7 +54,7 @@ func (d donationController) Create(ctx *gin.Context) {
 		return
 	}
 
-	response := helpers.GetResponse(false, http.StatusOK, "Create Donation Success", resp)
+	response := helpers.GetResponse(false, http.StatusOK, "Berhasil membuat donasi", resp)
 	ctx.JSON(http.StatusCreated, response)
 }
 
@@ -69,7 +69,7 @@ func (d donationController) GetAll(ctx *gin.Context) {
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
 			return
 		}
-		response := helpers.GetResponse(false, http.StatusOK, "List of Available Donations", result)
+		response := helpers.GetResponse(false, http.StatusOK, "Berhasil mendapatkan daftar donasi", result)
 		ctx.JSON(http.StatusOK, response)
 	} else if location != "" {
 		result, err := d.DonationRepository.GetAllByLocation(location)
@@ -78,7 +78,7 @@ func (d donationController) GetAll(ctx *gin.Context) {
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
 			return
 		}
-		response := helpers.GetResponse(false, http.StatusOK, "List of Available Donations", result)
+		response := helpers.GetResponse(false, http.StatusOK, "Berhasil mendapatkan daftar donasi", result)
 		ctx.JSON(http.StatusOK, response)
 	} else {
 		result, err := d.DonationRepository.GetAll()
@@ -87,7 +87,7 @@ func (d donationController) GetAll(ctx *gin.Context) {
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
 			return
 		}
-		response := helpers.GetResponse(false, http.StatusOK, "List of Donations", result)
+		response := helpers.GetResponse(false, http.StatusOK, "Berhasil mendapatkan daftar donasi", result)
 		ctx.JSON(http.StatusOK, response)
 	}
 
@@ -112,14 +112,14 @@ func (d donationController) Edit(ctx *gin.Context) {
 	if contentType == "application/json" {
 		err := ctx.ShouldBindJSON(&request)
 		if err != nil {
-			response := helpers.GetResponse(true, http.StatusBadRequest, "error binding request", nil)
+			response := helpers.GetResponse(true, http.StatusBadRequest, "request tidak valid", nil)
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
 			return
 		}
 	} else {
 		err := ctx.ShouldBind(&request)
 		if err != nil {
-			response := helpers.GetResponse(true, http.StatusBadRequest, "error binding request", nil)
+			response := helpers.GetResponse(true, http.StatusBadRequest, "request tidak valid", nil)
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
 			return
 		}
@@ -132,7 +132,7 @@ func (d donationController) Edit(ctx *gin.Context) {
 		return
 	}
 
-	response := helpers.GetResponse(false, http.StatusOK, "Success Update Donation Data", result)
+	response := helpers.GetResponse(false, http.StatusOK, "Berhasil ubah data donasi", result)
 	ctx.JSON(http.StatusOK, response)
 }
 
@@ -144,6 +144,6 @@ func (d donationController) Delete(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
 		return
 	}
-	response := helpers.GetResponse(false, http.StatusOK, "Success Delete Donation", nil)
+	response := helpers.GetResponse(false, http.StatusOK, "Berhasil hapus donasi", nil)
 	ctx.JSON(http.StatusOK, response)
 }

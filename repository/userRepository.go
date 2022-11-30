@@ -17,7 +17,7 @@ type IUserRepository interface {
 	GetByEmail(string) models.User
 	GetByUserName(string) models.GetUserResponse
 	GetById(string) models.GetUserResponse
-	SetProfilePhoto(string, string) error
+	SetProfilePhoto(string, string) (models.EditUserResponse, error)
 	Delete(string) error
 }
 
@@ -167,15 +167,26 @@ func (u UserDb) Edit(username string, newUserData models.User) (models.EditUserR
 	return response, nil
 }
 
-func (u UserDb) SetProfilePhoto(id, photoUrl string) error {
+func (u UserDb) SetProfilePhoto(id, photoUrl string) (models.EditUserResponse, error) {
 	User := models.User{
 		ID: id,
 	}
-	err := u.db.Model(&User).Update("profil_photo_url", photoUrl).Error
+	err := u.db.Model(&User).Clauses(clause.Returning{}).Update("profil_photo_url", photoUrl).Error
 	if err != nil {
-		return err
+		return models.EditUserResponse{}, err
 	}
-	return nil
+	response := models.EditUserResponse{
+		ID:             User.ID,
+		UserName:       User.UserName,
+		Email:          User.Email,
+		FullName:       User.FullName,
+		Gender:         User.Gender,
+		Address:        User.Address,
+		PhoneNumber:    User.PhoneNumber,
+		ProfilPhotoUrl: User.ProfilPhotoUrl,
+		Updated_at:     User.UpdatedAt,
+	}
+	return response, nil
 }
 
 func (u UserDb) Delete(id string) error {

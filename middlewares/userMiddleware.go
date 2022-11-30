@@ -23,11 +23,8 @@ func (u userMiddleware) Authentication() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		verifyToken, err := helpers.VerifyToken(ctx)
 		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"code":    http.StatusUnauthorized,
-				"error":   "Unauthorized",
-				"message": err.Error(),
-			})
+			response := helpers.GetResponse(true, http.StatusUnauthorized, "Anda tidak memilki akses, silahkan login terlebih dahulu", nil)
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
 		ctx.Set("userData", verifyToken)
@@ -44,7 +41,7 @@ func (u userMiddleware) Authorization() gin.HandlerFunc {
 		userName := fmt.Sprintf("%v", userData["user_name"])
 
 		if userNameURL != userName {
-			response := helpers.GetResponse(true, http.StatusUnauthorized, "You are not allowed to Access this data", nil)
+			response := helpers.GetResponse(true, http.StatusUnauthorized, "Akses ditolak, Anda tidak diizinkan mengubah data", nil)
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}

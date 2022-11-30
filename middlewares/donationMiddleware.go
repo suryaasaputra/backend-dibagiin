@@ -26,7 +26,7 @@ func (d donationMiddleware) Authorization() gin.HandlerFunc {
 		donationId := ctx.Param("donationId")
 		result, err := d.DonationRepository.GetById(donationId)
 		if err != nil {
-			response := helpers.GetResponse(true, http.StatusInternalServerError, "Something went wrong", nil)
+			response := helpers.GetResponse(true, http.StatusInternalServerError, "Terjadi kesalahan", nil)
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
 			return
 		}
@@ -35,7 +35,7 @@ func (d donationMiddleware) Authorization() gin.HandlerFunc {
 		userId := fmt.Sprintf("%v", userData["id"])
 
 		if userId != result.UserID {
-			response := helpers.GetResponse(true, http.StatusUnauthorized, "You are not allowed to Access this data", nil)
+			response := helpers.GetResponse(true, http.StatusUnauthorized, "Akses ditolak, Anda tidak diizinkan mengubah data", nil)
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
@@ -49,13 +49,13 @@ func (d donationMiddleware) CheckDonator() gin.HandlerFunc {
 		donationId := ctx.Param("donationId")
 		result, err := d.DonationRepository.GetById(donationId)
 		if err != nil {
-			response := helpers.GetResponse(true, http.StatusInternalServerError, "Something went wrong", nil)
+			response := helpers.GetResponse(true, http.StatusInternalServerError, "Terjadi kesalahan", nil)
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
 			return
 		}
 
 		if result.Status != "Tersedia" {
-			response := helpers.GetResponse(true, http.StatusBadRequest, "Donation is already taken by other user", nil)
+			response := helpers.GetResponse(true, http.StatusBadRequest, "Donasi sudah diambil oleh pengguna lain", nil)
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
 			return
 		}
@@ -64,7 +64,7 @@ func (d donationMiddleware) CheckDonator() gin.HandlerFunc {
 		userId := fmt.Sprintf("%v", userData["id"])
 
 		if userId == result.UserID {
-			response := helpers.GetResponse(true, http.StatusBadRequest, "You cannot make request to your own donation", nil)
+			response := helpers.GetResponse(true, http.StatusBadRequest, "Anda tidak bisa mengirim permintaan ke Donasi Anda sendiri", nil)
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
 			return
 		}
