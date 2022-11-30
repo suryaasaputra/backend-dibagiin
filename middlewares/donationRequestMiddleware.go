@@ -49,6 +49,7 @@ func (d donationRequestMiddleware) Authorization() gin.HandlerFunc {
 
 	}
 }
+
 func (d donationRequestMiddleware) CheckIfExist() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		donationId := ctx.Param("donationId")

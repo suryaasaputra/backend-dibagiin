@@ -4,6 +4,7 @@ import (
 	"dibagi/models"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type IDonationRequestRepository interface {
@@ -244,6 +245,30 @@ func (d DonationRequestDb) Confirm(id string) error {
 		return err
 	}
 
+	err = d.db.Model(models.DonationRequest{}).Where("donation_id=?", donationRequest.DonationID).Not("user_id=?", donationRequest.UserID).Updates(models.DonationRequest{Status: "Ditolak"}).Error
+	if err != nil {
+		return err
+	}
+
+	listRejectedRequest := []models.DonationRequest{}
+	err = d.db.Where("donation_id=?", donationRequest.DonationID).Where("status=?", "Ditolak").Find(&listRejectedRequest).Error
+	if err != nil {
+		return err
+	}
+
+	for _, v := range listRejectedRequest {
+		donationHistory := models.DonationHistory{
+			DonationID:        v.DonationID,
+			UserID:            v.UserID,
+			DonationRequestID: id,
+			Status:            false,
+		}
+		err = d.db.Create(&donationHistory).Error
+		if err != nil {
+			return err
+		}
+	}
+
 	donation := models.Donation{}
 	donationID := donationRequest.DonationID
 
@@ -253,8 +278,10 @@ func (d DonationRequestDb) Confirm(id string) error {
 	}
 
 	donationHistory := models.DonationHistory{
-		DonationID: donationID,
-		UserID:     donationRequest.UserID,
+		DonationID:        donationID,
+		UserID:            donationRequest.UserID,
+		DonationRequestID: donationRequest.ID,
+		Status:            true,
 	}
 
 	err = d.db.Create(&donationHistory).Error
@@ -264,15 +291,27 @@ func (d DonationRequestDb) Confirm(id string) error {
 
 	return nil
 }
+
 func (d DonationRequestDb) Reject(id string) error {
 	donationRequest := models.DonationRequest{}
 
-	err := d.db.Where("id=?", id).First(&donationRequest).Error
+	err := d.db.Model(&donationRequest).Where("id=?", id).Updates(map[string]interface{}{"status": "Ditolak"}).Error
 	if err != nil {
 		return err
 	}
 
-	err = d.db.Model(&donationRequest).Where("id=?", id).Update("status", "Ditolak").Error
+	err = d.db.Preload(clause.Associations).Where("id=?", id).First(&donationRequest).Error
+	if err != nil {
+		return err
+	}
+
+	donationHistory := models.DonationHistory{
+		DonationID:        donationRequest.DonationID,
+		UserID:            donationRequest.UserID,
+		DonationRequestID: donationRequest.ID,
+		Status:            false,
+	}
+	err = d.db.Create(&donationHistory).Error
 	if err != nil {
 		return err
 	}

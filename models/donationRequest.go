@@ -14,7 +14,7 @@ type DonationRequest struct {
 	DonationID string     `json:"donation_id" gorm:"not null;"`
 	DonatorID  string     `json:"donator_id" gorm:"not null;"`
 	Message    string     `json:"message" gorm:"not null;" valid:"required~Message is required" `
-	Status     string     `json:"status" gorm:"not null;type:varchar;default:Diminta"`
+	Status     string     `json:"status" gorm:"not null;type:varchar;default:Belum dikonfirmasi"`
 	User       *User      `json:"-"`
 	Donator    *User      `json:"-"`
 	Donation   *Donation  `json:"-"`

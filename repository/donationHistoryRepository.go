@@ -4,10 +4,12 @@ import (
 	"dibagi/models"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type IDonationHistoryRepository interface {
 	GetAllByUserId(string) ([]models.GetDonationHistoryResponse, error)
+	GetAllByDonationRequestId(string) ([]models.DonationHistory, error)
 }
 
 type DonationHistoryDB struct {
@@ -29,11 +31,13 @@ func (d DonationHistoryDB) GetAllByUserId(userId string) ([]models.GetDonationHi
 	listHistory := []models.GetDonationHistoryResponse{}
 	for _, v := range donationHistory {
 		response := models.GetDonationHistoryResponse{
-			ID:         v.ID,
-			UserID:     v.UserID,
-			DonationID: v.DonationID,
-			CreatedAt:  v.CreatedAt,
-			UpdatedAt:  v.UpdatedAt,
+			ID:                v.ID,
+			UserID:            v.UserID,
+			DonationID:        v.DonationID,
+			Status:            v.Status,
+			DonationRequestID: v.DonationRequestID,
+			CreatedAt:         v.CreatedAt,
+			UpdatedAt:         v.UpdatedAt,
 		}
 
 		response.Donation.ID = v.Donation.ID
@@ -54,8 +58,18 @@ func (d DonationHistoryDB) GetAllByUserId(userId string) ([]models.GetDonationHi
 		response.User.UserName = v.User.UserName
 		response.User.FullName = v.User.FullName
 		response.User.PhoneNumber = v.User.PhoneNumber
+		response.User.ProfilPhotoUrl = v.User.ProfilPhotoUrl
 
 		listHistory = append(listHistory, response)
 	}
 	return listHistory, nil
+}
+func (d DonationHistoryDB) GetAllByDonationRequestId(donationRequestId string) ([]models.DonationHistory, error) {
+	donationHistory := []models.DonationHistory{}
+	err := d.db.Preload(clause.Associations).Where("donation_request_id=?", donationRequestId).Find(&donationHistory).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return donationHistory, nil
 }

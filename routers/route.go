@@ -74,9 +74,9 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 		donationRouter.GET("/request/:donationRequestId", ctl.DonationRequestController.GetById)
 
 		// confirm a request
-		donationRouter.POST("/request/:donationRequestId/confirm", mdl.DonationRequestMiddleware.Authorization(), ctl.DonationRequestController.Confirm)
+		donationRouter.POST("/request/:donationRequestId/confirm", mdl.DonationRequestMiddleware.Authorization(), mdl.DonationHistoryMiddleware.CheckIfExist(), ctl.DonationRequestController.Confirm)
 		// reject a request
-		donationRouter.PUT("/request/:donationRequestId/reject", mdl.DonationRequestMiddleware.Authorization(), ctl.DonationRequestController.Reject)
+		donationRouter.POST("/request/:donationRequestId/reject", mdl.DonationRequestMiddleware.Authorization(), mdl.DonationHistoryMiddleware.CheckIfExist(), ctl.DonationRequestController.Reject)
 
 		// donation authorization
 		donationRouter.Use(mdl.DonationMiddleware.Authorization())

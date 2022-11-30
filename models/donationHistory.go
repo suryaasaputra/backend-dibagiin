@@ -8,22 +8,27 @@ import (
 )
 
 type DonationHistory struct {
-	ID         string     `json:"id" gorm:"primaryKey;type:varchar"`
-	UserID     string     `json:"user_id" gorm:"not null;"`
-	DonationID string     `json:"donation_id" gorm:"not null;"`
-	User       *User      `json:"-"`
-	Donation   *Donation  `json:"-"`
-	CreatedAt  *time.Time `json:"created_at"`
-	UpdatedAt  *time.Time `json:"updated_at"`
+	ID                string           `json:"id" gorm:"primaryKey;type:varchar"`
+	UserID            string           `json:"user_id" gorm:"not null;"`
+	DonationID        string           `json:"donation_id" gorm:"not null;"`
+	DonationRequestID string           `json:"donation_request_id" gorm:"not null;"`
+	Status            bool             `json:"status" gorm:"not null;"`
+	User              *User            `json:"-"`
+	Donation          *Donation        `json:"-"`
+	DonationRequest   *DonationRequest `json:"-"`
+	CreatedAt         *time.Time       `json:"created_at"`
+	UpdatedAt         *time.Time       `json:"updated_at"`
 }
 
 type GetDonationHistoryResponse struct {
-	ID         string     `json:"id" `
-	UserID     string     `json:"user_id"`
-	DonationID string     `json:"donation_id"`
-	CreatedAt  *time.Time `json:"created_at"`
-	UpdatedAt  *time.Time `json:"updated_at"`
-	Donation   struct {
+	ID                string     `json:"id" `
+	UserID            string     `json:"user_id"`
+	DonationID        string     `json:"donation_id"`
+	DonationRequestID string     `json:"donation_request_id"`
+	Status            bool       `json:"status"`
+	CreatedAt         *time.Time `json:"created_at"`
+	UpdatedAt         *time.Time `json:"updated_at"`
+	Donation          struct {
 		ID          string     `json:"id"`
 		Title       string     `json:"title"`
 		Description string     `json:"description"`
