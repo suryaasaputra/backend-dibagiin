@@ -275,8 +275,8 @@ func (d DonationRequestDb) Confirm(id string) error {
 			DonationID:        v.DonationID,
 			UserID:            v.UserID,
 			DonationRequestID: id,
-			Type:              "reject",
-			Message:           "Permintaan anda ditolak karena, donasi telah diberikan ke pengguna lain",
+			Type:              "rejectAll",
+			Message:           "donasi telah diberikan ke pengguna lain",
 		}
 		err = d.db.Create(&donationHistory).Error
 		if err != nil {
@@ -326,7 +326,7 @@ func (d DonationRequestDb) Reject(id string) error {
 		UserID:            donationRequest.UserID,
 		DonationRequestID: donationRequest.ID,
 		Type:              "reject",
-		Message:           "Permintaan anda ditolak",
+		Message:           "menolak permintaan anda",
 	}
 	err = d.db.Create(&donationHistory).Error
 	if err != nil {

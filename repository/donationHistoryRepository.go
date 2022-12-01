@@ -24,7 +24,7 @@ func NewDonationHistoryRepository(db *gorm.DB) *DonationHistoryDB {
 
 func (d DonationHistoryDB) GetAllByUserId(userId string) ([]models.GetDonationHistoryResponse, error) {
 	donationHistory := []models.DonationHistory{}
-	err := d.db.Preload("User").Preload("Donation").Preload("Donation.User").Where("user_id=?", userId).Order("created_at desc").Find(&donationHistory).Error
+	err := d.db.Preload("User").Preload("Donation").Preload("Donation.User").Preload("DonationRequest").Preload("DonationRequest.User").Where("user_id=?", userId).Order("created_at desc").Find(&donationHistory).Error
 	if err != nil {
 		return nil, err
 	}
