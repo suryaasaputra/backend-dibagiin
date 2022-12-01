@@ -34,7 +34,8 @@ func (d DonationHistoryDB) GetAllByUserId(userId string) ([]models.GetDonationHi
 			ID:                v.ID,
 			UserID:            v.UserID,
 			DonationID:        v.DonationID,
-			Status:            v.Status,
+			Type:              v.Type,
+			Message:           v.Message,
 			DonationRequestID: v.DonationRequestID,
 			CreatedAt:         v.CreatedAt,
 			UpdatedAt:         v.UpdatedAt,
@@ -59,6 +60,21 @@ func (d DonationHistoryDB) GetAllByUserId(userId string) ([]models.GetDonationHi
 		response.User.FullName = v.User.FullName
 		response.User.PhoneNumber = v.User.PhoneNumber
 		response.User.ProfilPhotoUrl = v.User.ProfilPhotoUrl
+
+		response.DonationRequest.ID = v.DonationRequest.ID
+		response.DonationRequest.UserID = v.DonationRequest.UserID
+		response.DonationRequest.DonationID = v.DonationRequest.DonationID
+		response.DonationRequest.DonatorID = v.DonationRequest.DonatorID
+		response.DonationRequest.Status = v.DonationRequest.Status
+		response.DonationRequest.Message = v.DonationRequest.Message
+		response.DonationRequest.CreatedAt = v.DonationRequest.CreatedAt
+		response.DonationRequest.UpdatedAt = v.DonationRequest.UpdatedAt
+
+		response.DonationRequest.User.ID = v.DonationRequest.User.ID
+		response.DonationRequest.User.FullName = v.DonationRequest.User.FullName
+		response.DonationRequest.User.UserName = v.DonationRequest.User.UserName
+		response.DonationRequest.User.PhoneNumber = v.DonationRequest.User.PhoneNumber
+		response.DonationRequest.User.ProfilPhotoUrl = v.DonationRequest.User.ProfilPhotoUrl
 
 		listHistory = append(listHistory, response)
 	}

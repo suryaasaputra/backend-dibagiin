@@ -10,8 +10,9 @@ import (
 )
 
 func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
-
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
+
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "PATCH"}

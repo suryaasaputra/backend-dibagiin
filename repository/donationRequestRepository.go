@@ -43,6 +43,20 @@ func (d DonationRequestDb) Create(donationRequest models.DonationRequest) (model
 	if err != nil {
 		return models.CreateDonationRequestResponse{}, err
 	}
+
+	donationHistory := models.DonationHistory{
+		DonationID:        donationId,
+		UserID:            donationModel.UserID,
+		DonationRequestID: donationRequest.ID,
+		Type:              "request",
+		Message:           "Meminta barang yang anda donasikan",
+	}
+
+	err = d.db.Create(&donationHistory).Error
+	if err != nil {
+		return models.CreateDonationRequestResponse{}, err
+	}
+
 	return models.CreateDonationRequestResponse{
 		ID:         donationRequest.ID,
 		UserID:     donationRequest.UserID,
@@ -261,7 +275,8 @@ func (d DonationRequestDb) Confirm(id string) error {
 			DonationID:        v.DonationID,
 			UserID:            v.UserID,
 			DonationRequestID: id,
-			Status:            false,
+			Type:              "reject",
+			Message:           "Permintaan anda ditolak karena, donasi telah diberikan ke pengguna lain",
 		}
 		err = d.db.Create(&donationHistory).Error
 		if err != nil {
@@ -281,7 +296,8 @@ func (d DonationRequestDb) Confirm(id string) error {
 		DonationID:        donationID,
 		UserID:            donationRequest.UserID,
 		DonationRequestID: donationRequest.ID,
-		Status:            true,
+		Type:              "confirm",
+		Message:           "Permintaan anda telah disetujui",
 	}
 
 	err = d.db.Create(&donationHistory).Error
@@ -309,7 +325,8 @@ func (d DonationRequestDb) Reject(id string) error {
 		DonationID:        donationRequest.DonationID,
 		UserID:            donationRequest.UserID,
 		DonationRequestID: donationRequest.ID,
-		Status:            false,
+		Type:              "reject",
+		Message:           "Permintaan anda ditolak",
 	}
 	err = d.db.Create(&donationHistory).Error
 	if err != nil {
