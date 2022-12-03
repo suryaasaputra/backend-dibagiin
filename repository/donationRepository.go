@@ -144,11 +144,13 @@ func (d DonationDb) GetById(id string) (models.GetDonationsResponse, error) {
 		PhoneNumber    string `json:"phone_number,omitempty"`
 		ProfilPhotoUrl string `json:"profil_photo_url,omitempty"`
 	}{}
-	taker.ID = donation.Taker.ID
-	taker.UserName = donation.Taker.UserName
-	taker.FullName = donation.Taker.FullName
-	taker.PhoneNumber = donation.Taker.PhoneNumber
-	taker.ProfilPhotoUrl = donation.Taker.ProfilPhotoUrl
+	if donation.TakerID != nil {
+		taker.ID = donation.Taker.ID
+		taker.UserName = donation.Taker.UserName
+		taker.FullName = donation.Taker.FullName
+		taker.PhoneNumber = donation.Taker.PhoneNumber
+		taker.ProfilPhotoUrl = donation.Taker.ProfilPhotoUrl
+	}
 	result := models.GetDonationsResponse{
 		Donation: donation,
 		Donator:  donator,
