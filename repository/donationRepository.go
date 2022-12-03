@@ -121,7 +121,7 @@ func (d DonationDb) GetAllByLocation(location string) ([]models.GetDonationsResp
 
 func (d DonationDb) GetById(id string) (models.GetDonationsResponse, error) {
 	donation := models.Donation{}
-	err := d.db.Where("id=?", id).Preload("User").First(&donation).Error
+	err := d.db.Where("id=?", id).Preload("User").Preload("Taker").First(&donation).Error
 	if err != nil {
 		return models.GetDonationsResponse{}, err
 	}
@@ -137,9 +137,22 @@ func (d DonationDb) GetById(id string) (models.GetDonationsResponse, error) {
 	donator.FullName = donation.User.FullName
 	donator.PhoneNumber = donation.User.PhoneNumber
 	donator.ProfilPhotoUrl = donation.User.ProfilPhotoUrl
+	var taker = struct {
+		ID             string `json:"id,omitempty"`
+		UserName       string `json:"user_name,omitempty"`
+		FullName       string `json:"full_name,omitempty"`
+		PhoneNumber    string `json:"phone_number,omitempty"`
+		ProfilPhotoUrl string `json:"profil_photo_url,omitempty"`
+	}{}
+	taker.ID = donation.Taker.ID
+	taker.UserName = donation.Taker.UserName
+	taker.FullName = donation.Taker.FullName
+	taker.PhoneNumber = donation.Taker.PhoneNumber
+	taker.ProfilPhotoUrl = donation.Taker.ProfilPhotoUrl
 	result := models.GetDonationsResponse{
 		Donation: donation,
 		Donator:  donator,
+		Taker:    taker,
 	}
 	return result, nil
 }
