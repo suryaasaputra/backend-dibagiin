@@ -108,11 +108,11 @@ type GetUserResponse struct {
 			ProfilPhotoUrl string `json:"profil_photo_url"`
 		} `json:"donator"`
 		Taker struct {
-			ID             string `json:"id"`
-			UserName       string `json:"user_name"`
-			FullName       string `json:"full_name"`
-			PhoneNumber    string `json:"phone_number"`
-			ProfilPhotoUrl string `json:"profil_photo_url"`
+			ID             string `json:"id,omitempty"`
+			UserName       string `json:"user_name,omitempty"`
+			FullName       string `json:"full_name,omitempty"`
+			PhoneNumber    string `json:"phone_number,omitempty"`
+			ProfilPhotoUrl string `json:"profil_photo_url,omitempty"`
 		} `json:"taker"`
 	} `json:"donation"`
 
