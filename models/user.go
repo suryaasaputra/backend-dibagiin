@@ -107,6 +107,13 @@ type GetUserResponse struct {
 			PhoneNumber    string `json:"phone_number"`
 			ProfilPhotoUrl string `json:"profil_photo_url"`
 		} `json:"donator"`
+		Taker struct {
+			ID             string `json:"id"`
+			UserName       string `json:"user_name"`
+			FullName       string `json:"full_name"`
+			PhoneNumber    string `json:"phone_number"`
+			ProfilPhotoUrl string `json:"profil_photo_url"`
+		} `json:"taker"`
 	} `json:"donation"`
 
 	Created_at *time.Time `json:"created_at"`
