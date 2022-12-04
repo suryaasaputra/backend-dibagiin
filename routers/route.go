@@ -10,7 +10,7 @@ import (
 )
 
 func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
-	gin.SetMode(gin.ReleaseMode)
+	// gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
 	config := cors.DefaultConfig()

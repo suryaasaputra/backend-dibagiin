@@ -67,7 +67,7 @@ func (u UserDb) GetByEmail(email string) models.User {
 func (u UserDb) GetByUserName(userName string) models.GetUserResponse {
 	user := models.User{}
 
-	u.db.Preload(clause.Associations).Where("user_name =? ", userName).First(&user)
+	u.db.Preload("Donation").Preload("Donation.User").Preload("Donation.Taker").Where("user_name =? ", userName).First(&user)
 	response := models.GetUserResponse{
 		ID:             user.ID,
 		UserName:       user.UserName,
@@ -120,11 +120,13 @@ func (u UserDb) GetByUserName(userName string) models.GetUserResponse {
 		donation.Donator.FullName = v.User.FullName
 		donation.Donator.PhoneNumber = v.User.PhoneNumber
 		donation.Donator.ProfilPhotoUrl = v.User.ProfilPhotoUrl
-		donation.Taker.ID = v.User.ID
-		donation.Taker.UserName = v.Taker.UserName
-		donation.Taker.FullName = v.Taker.FullName
-		donation.Taker.PhoneNumber = v.Taker.PhoneNumber
-		donation.Taker.ProfilPhotoUrl = v.Taker.ProfilPhotoUrl
+		if donation.TakerID != nil {
+			donation.Taker.ID = v.Taker.ID
+			donation.Taker.UserName = v.Taker.UserName
+			donation.Taker.FullName = v.Taker.FullName
+			donation.Taker.PhoneNumber = v.Taker.PhoneNumber
+			donation.Taker.ProfilPhotoUrl = v.Taker.ProfilPhotoUrl
+		}
 		response.Donation = append(response.Donation, donation)
 	}
 
