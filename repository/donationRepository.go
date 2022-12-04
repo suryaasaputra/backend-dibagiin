@@ -2,6 +2,7 @@ package repository
 
 import (
 	"dibagi/models"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -13,6 +14,7 @@ type IDonationRepository interface {
 	GetById(string) (models.GetDonationsResponse, error)
 	GetAllAvailable() ([]models.GetDonationsResponse, error)
 	GetAllByLocation(string) ([]models.GetDonationsResponse, error)
+	GetAllByKeyword(string) ([]models.GetDonationsResponse, error)
 	Edit(string, models.EditDonationRequest) (models.EditDonationResponse, error)
 	Delete(string) error
 }
@@ -80,7 +82,7 @@ func (d DonationDb) GetAll() ([]models.GetDonationsResponse, error) {
 
 func (d DonationDb) GetAllAvailable() ([]models.GetDonationsResponse, error) {
 	donations := []models.Donation{}
-	err := d.db.Where("status=?", "Tersedia").Preload("User").Find(&donations).Error
+	err := d.db.Where("status=?", "Tersedia").Preload(clause.Associations).Order("created_at desc").Find(&donations).Error
 	if err != nil {
 		return nil, err
 	}
@@ -93,14 +95,28 @@ func (d DonationDb) GetAllAvailable() ([]models.GetDonationsResponse, error) {
 		response.Donator.ID = v.User.ID
 		response.Donator.UserName = v.User.UserName
 		response.Donator.FullName = v.User.FullName
+		response.Donator.PhoneNumber = v.User.PhoneNumber
 		response.Donator.ProfilPhotoUrl = v.User.ProfilPhotoUrl
+		for _, r := range v.DonationRequest {
+			response.Request = append(response.Request, r.UserID)
+		}
+
+		if response.TakerID != nil {
+			response.Taker.ID = v.User.ID
+			response.Taker.UserName = v.Taker.UserName
+			response.Taker.FullName = v.Taker.FullName
+			response.Taker.PhoneNumber = v.Taker.PhoneNumber
+			response.Taker.ProfilPhotoUrl = v.Taker.ProfilPhotoUrl
+		}
 		donationList = append(donationList, response)
 	}
+
 	return donationList, nil
 }
 func (d DonationDb) GetAllByLocation(location string) ([]models.GetDonationsResponse, error) {
 	donations := []models.Donation{}
-	err := d.db.Where("location LIKE", "%"+location+"%").Preload("User").Find(&donations).Error
+	lowerKeyword := strings.ToLower(location)
+	err := d.db.Where("lower(location) LIKE ?", "%"+lowerKeyword+"%").Preload(clause.Associations).Order("created_at desc").Find(&donations).Error
 	if err != nil {
 		return nil, err
 	}
@@ -113,9 +129,56 @@ func (d DonationDb) GetAllByLocation(location string) ([]models.GetDonationsResp
 		response.Donator.ID = v.User.ID
 		response.Donator.UserName = v.User.UserName
 		response.Donator.FullName = v.User.FullName
+		response.Donator.PhoneNumber = v.User.PhoneNumber
 		response.Donator.ProfilPhotoUrl = v.User.ProfilPhotoUrl
+		for _, r := range v.DonationRequest {
+			response.Request = append(response.Request, r.UserID)
+		}
+
+		if response.TakerID != nil {
+			response.Taker.ID = v.User.ID
+			response.Taker.UserName = v.Taker.UserName
+			response.Taker.FullName = v.Taker.FullName
+			response.Taker.PhoneNumber = v.Taker.PhoneNumber
+			response.Taker.ProfilPhotoUrl = v.Taker.ProfilPhotoUrl
+		}
 		donationList = append(donationList, response)
 	}
+
+	return donationList, nil
+}
+func (d DonationDb) GetAllByKeyword(keyword string) ([]models.GetDonationsResponse, error) {
+	donations := []models.Donation{}
+	lowerKeyword := strings.ToLower(keyword)
+	err := d.db.Where("lower(title) LIKE ?", "%"+lowerKeyword+"%").Preload(clause.Associations).Order("created_at desc").Find(&donations).Error
+	if err != nil {
+		return nil, err
+	}
+
+	donationList := []models.GetDonationsResponse{}
+
+	for _, v := range donations {
+		response := models.GetDonationsResponse{}
+		response.Donation = v
+		response.Donator.ID = v.User.ID
+		response.Donator.UserName = v.User.UserName
+		response.Donator.FullName = v.User.FullName
+		response.Donator.PhoneNumber = v.User.PhoneNumber
+		response.Donator.ProfilPhotoUrl = v.User.ProfilPhotoUrl
+		for _, r := range v.DonationRequest {
+			response.Request = append(response.Request, r.UserID)
+		}
+
+		if response.TakerID != nil {
+			response.Taker.ID = v.User.ID
+			response.Taker.UserName = v.Taker.UserName
+			response.Taker.FullName = v.Taker.FullName
+			response.Taker.PhoneNumber = v.Taker.PhoneNumber
+			response.Taker.ProfilPhotoUrl = v.Taker.ProfilPhotoUrl
+		}
+		donationList = append(donationList, response)
+	}
+
 	return donationList, nil
 }
 
