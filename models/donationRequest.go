@@ -53,7 +53,7 @@ type GetDonationRequestResponse struct {
 		ID          string     `json:"id"`
 		Title       string     `json:"title"`
 		Description string     `json:"description"`
-		Weight      string     `json:"weight"`
+		Weight      int        `json:"weight"`
 		PhotoUrl    string     `json:"photo_url"`
 		Location    string     `json:"location"`
 		CreatedAt   *time.Time `json:"created_at"`

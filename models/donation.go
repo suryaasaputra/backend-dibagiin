@@ -14,7 +14,7 @@ type Donation struct {
 	UserID          string            `json:"-" gorm:"not null;"`
 	Title           string            `json:"title" form:"title" gorm:"not null;type:varchar" valid:"required~Title is required"`
 	Description     string            `json:"description" form:"description" gorm:"not null;type:varchar" valid:"required~Description is required"`
-	Weight          string            `json:"weight" form:"weight" gorm:"not null;type:varchar" valid:"required~Weight is required"`
+	Weight          int               `json:"weight" form:"weight" gorm:"not null" valid:"required~Weight is required"`
 	PhotoUrl        string            `json:"photo_url" form:"photo_url" gorm:"not null;type:varchar" valid:"required~Photo URL is required"`
 	Location        string            `json:"location" form:"location" gorm:"not null;type:varchar" valid:"required~Location is required"`
 	Status          string            `json:"status" gorm:"not null;type:varchar;default:Tersedia"`
@@ -29,14 +29,14 @@ type Donation struct {
 type CreateDonationRequest struct {
 	Title         string                `json:"title" form:"title"`
 	Description   string                `json:"description" form:"description"`
-	Weight        string                `json:"weight" form:"weight"`
+	Weight        int                   `json:"weight" form:"weight"`
 	DonationPhoto *multipart.FileHeader `json:"donation_photo" form:"donation_photo"`
 	Location      string                `json:"location" form:"location"`
 }
 type EditDonationRequest struct {
 	Title       string `json:"title" form:"title"`
 	Description string `json:"description" form:"description"`
-	Weight      string `json:"weight" form:"weight"`
+	Weight      int    `json:"weight" form:"weight"`
 	Location    string `json:"location" form:"location"`
 }
 
@@ -45,7 +45,7 @@ type CreateDonationResponse struct {
 	UserID      string     `json:"user_id"`
 	Title       string     `json:"title" `
 	Description string     `json:"description"`
-	Weight      string     `json:"weight"`
+	Weight      int        `json:"weight"`
 	PhotoUrl    string     `json:"photo"`
 	Location    string     `json:"location"`
 	Status      string     `json:"status"`
@@ -57,7 +57,7 @@ type EditDonationResponse struct {
 	UserID      string     `json:"user_id"`
 	Title       string     `json:"title" `
 	Description string     `json:"description"`
-	Weight      string     `json:"weight"`
+	Weight      int        `json:"weight"`
 	PhotoUrl    string     `json:"photo"`
 	Location    string     `json:"location"`
 	Status      string     `json:"status"`
