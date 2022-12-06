@@ -185,7 +185,7 @@ func (d DonationDb) GetAllByKeyword(keyword string) ([]models.GetDonationsRespon
 
 func (d DonationDb) GetById(id string) (models.GetDonationsResponse, error) {
 	donation := models.Donation{}
-	err := d.db.Where("id=?", id).Preload("User").Preload("Taker").First(&donation).Error
+	err := d.db.Where("id=?", id).Preload("DonationRequest").Preload("User").Preload("Taker").First(&donation).Error
 	if err != nil {
 		return models.GetDonationsResponse{}, err
 	}
@@ -208,6 +208,7 @@ func (d DonationDb) GetById(id string) (models.GetDonationsResponse, error) {
 		PhoneNumber    string `json:"phone_number,omitempty"`
 		ProfilPhotoUrl string `json:"profil_photo_url,omitempty"`
 	}{}
+
 	if donation.TakerID != nil {
 		taker.ID = donation.Taker.ID
 		taker.UserName = donation.Taker.UserName
@@ -219,6 +220,10 @@ func (d DonationDb) GetById(id string) (models.GetDonationsResponse, error) {
 		Donation: donation,
 		Donator:  donator,
 		Taker:    taker,
+	}
+
+	for _, r := range donation.DonationRequest {
+		result.Request = append(result.Request, r.UserID)
 	}
 	return result, nil
 }
