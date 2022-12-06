@@ -94,6 +94,7 @@ type GetUserResponse struct {
 		ID          string     `json:"id"`
 		Title       string     `json:"title"`
 		Description string     `json:"description"`
+		Weight      string     `json:"weight"`
 		PhotoUrl    string     `json:"photo_url"`
 		Location    string     `json:"location"`
 		Status      string     `json:"status"`

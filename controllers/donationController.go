@@ -43,6 +43,7 @@ func (d donationController) Create(ctx *gin.Context) {
 		UserID:      id,
 		Title:       request.Title,
 		Description: request.Description,
+		Weight:      request.Weight,
 		PhotoUrl:    photoURL,
 		Location:    request.Location,
 	}

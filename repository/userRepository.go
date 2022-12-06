@@ -85,6 +85,7 @@ func (u UserDb) GetByUserName(userName string) models.GetUserResponse {
 			ID          string     `json:"id"`
 			Title       string     `json:"title"`
 			Description string     `json:"description"`
+			Weight      string     `json:"weight"`
 			PhotoUrl    string     `json:"photo_url"`
 			Location    string     `json:"location"`
 			Status      string     `json:"status"`
@@ -109,6 +110,7 @@ func (u UserDb) GetByUserName(userName string) models.GetUserResponse {
 		donation.ID = v.ID
 		donation.Title = v.Title
 		donation.Description = v.Description
+		donation.Weight = v.Weight
 		donation.PhotoUrl = v.PhotoUrl
 		donation.Location = v.Location
 		donation.Status = v.Status

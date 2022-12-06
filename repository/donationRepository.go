@@ -39,6 +39,7 @@ func (d DonationDb) Create(donation models.Donation) (models.CreateDonationRespo
 		UserID:      donation.UserID,
 		Title:       donation.Title,
 		Description: donation.Description,
+		Weight:      donation.Weight,
 		PhotoUrl:    donation.PhotoUrl,
 		Status:      donation.Status,
 		Location:    donation.Location,

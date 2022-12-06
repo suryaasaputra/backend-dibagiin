@@ -90,6 +90,7 @@ func (d DonationRequestDb) GetAllByUserId(userId string) ([]models.GetDonationRe
 		response.Donation.ID = v.Donation.ID
 		response.Donation.Title = v.Donation.Title
 		response.Donation.Description = v.Donation.Description
+		response.Donation.Weight = v.Donation.Weight
 		response.Donation.PhotoUrl = v.Donation.PhotoUrl
 		response.Donation.Location = v.Donation.Location
 		response.Donation.CreatedAt = v.Donation.CreatedAt
@@ -133,6 +134,7 @@ func (d DonationRequestDb) GetAllByDonationId(donationId string) ([]models.GetDo
 		response.Donation.ID = v.Donation.ID
 		response.Donation.Title = v.Donation.Title
 		response.Donation.Description = v.Donation.Description
+		response.Donation.Weight = v.Donation.Weight
 		response.Donation.PhotoUrl = v.Donation.PhotoUrl
 		response.Donation.Location = v.Donation.Location
 		response.Donation.CreatedAt = v.Donation.CreatedAt
@@ -175,6 +177,7 @@ func (d DonationRequestDb) GetAllByDonatorId(donatorId string) ([]models.GetDona
 		response.Donation.ID = v.Donation.ID
 		response.Donation.Title = v.Donation.Title
 		response.Donation.Description = v.Donation.Description
+		response.Donation.Weight = v.Donation.Weight
 		response.Donation.PhotoUrl = v.Donation.PhotoUrl
 		response.Donation.Location = v.Donation.Location
 		response.Donation.CreatedAt = v.Donation.CreatedAt
@@ -217,6 +220,7 @@ func (d DonationRequestDb) GetById(id string) (models.GetDonationRequestResponse
 	result.Donation.ID = donationRequest.Donation.ID
 	result.Donation.Title = donationRequest.Donation.Title
 	result.Donation.Description = donationRequest.Donation.Description
+	result.Donation.Weight = donationRequest.Donation.Weight
 	result.Donation.PhotoUrl = donationRequest.Donation.PhotoUrl
 	result.Donation.Location = donationRequest.Donation.Location
 	result.Donation.CreatedAt = donationRequest.Donation.CreatedAt
