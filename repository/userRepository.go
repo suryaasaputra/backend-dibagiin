@@ -51,6 +51,8 @@ func (u UserDb) Create(user models.User) (models.CreateUserResponse, error) {
 		Gender:         user.Gender,
 		PhoneNumber:    user.PhoneNumber,
 		Address:        user.Address,
+		Lat:            user.Lat,
+		Lng:            user.Lng,
 		ProfilPhotoUrl: user.ProfilPhotoUrl,
 		CreatedAt:      user.CreatedAt,
 	}, nil
@@ -169,6 +171,8 @@ func (u UserDb) Edit(username string, newUserData models.User) (models.EditUserR
 		Gender:      newUserData.Gender,
 		PhoneNumber: newUserData.PhoneNumber,
 		Address:     newUserData.Address,
+		Lat:         newUserData.Lat,
+		Lng:         newUserData.Lng,
 	}).Error
 
 	if err != nil {
@@ -182,6 +186,8 @@ func (u UserDb) Edit(username string, newUserData models.User) (models.EditUserR
 		FullName:       User.FullName,
 		Gender:         User.Gender,
 		Address:        User.Address,
+		Lat:            User.Lat,
+		Lng:            User.Lng,
 		PhoneNumber:    User.PhoneNumber,
 		ProfilPhotoUrl: User.ProfilPhotoUrl,
 		Updated_at:     User.UpdatedAt,

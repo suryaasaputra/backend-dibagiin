@@ -21,6 +21,8 @@ type User struct {
 	Gender           string            `gorm:"not null;type:varchar" json:"gender" form:"gender" valid:"required~Gender is required"`
 	PhoneNumber      string            `gorm:"not null;type:varchar" json:"phone_number" form:"phone_number" valid:"required~Phone number is required"`
 	Address          string            `gorm:"not null;type:varchar" json:"address" form:"address" valid:"required~Address is required"`
+	Lat              float64           ` json:"lat" form:"lat" valid:"required~Latitude is required"`
+	Lng              float64           ` json:"lng" form:"lng" valid:"required~Longitude is required"`
 	ProfilPhotoUrl   string            `gorm:"type:varchar;" json:"profil_photo_url" form:"profil_photo_url" `
 	CreatedAt        *time.Time        `json:"created_at"`
 	UpdatedAt        *time.Time        `json:"updated_at"`
@@ -32,22 +34,26 @@ type User struct {
 }
 
 type UserRegisterRequest struct {
-	Email       string `json:"email" form:"email"`
-	UserName    string `json:"user_name" form:"user_name"`
-	Password    string `json:"password" form:"password" `
-	FullName    string `json:"full_name" form:"full_name" `
-	Gender      string `json:"gender" form:"gender" `
-	PhoneNumber string `json:"phone_number" form:"phone_number" `
-	Address     string `json:"address" form:"address" `
+	Email       string  `json:"email" form:"email"`
+	UserName    string  `json:"user_name" form:"user_name"`
+	Password    string  `json:"password" form:"password" `
+	FullName    string  `json:"full_name" form:"full_name" `
+	Gender      string  `json:"gender" form:"gender" `
+	PhoneNumber string  `json:"phone_number" form:"phone_number" `
+	Address     string  `json:"address" form:"address" `
+	Lat         float64 `json:"lat" form:"lng" `
+	Lng         float64 `json:"lng" form:"lng" `
 	// ProfilPhoto *multipart.FileHeader `json:"profil_photo,omitempty" form:"profil_photo,omitempty" `
 }
 type EditUserRequest struct {
-	Email       string `json:"email" form:"email"`
-	UserName    string `json:"user_name" form:"user_name"`
-	FullName    string `json:"full_name" form:"full_name" `
-	Gender      string `json:"gender" form:"gender" `
-	PhoneNumber string `json:"phone_number" form:"phone_number" `
-	Address     string `json:"address" form:"address" `
+	Email       string  `json:"email" form:"email"`
+	UserName    string  `json:"user_name" form:"user_name"`
+	FullName    string  `json:"full_name" form:"full_name" `
+	Gender      string  `json:"gender" form:"gender" `
+	PhoneNumber string  `json:"phone_number" form:"phone_number" `
+	Address     string  `json:"address" form:"address" `
+	Lat         float64 `json:"lat" form:"lat" `
+	Lng         float64 `json:"lng" form:"lng" `
 	// ProfilPhoto *multipart.FileHeader `json:"profil_photo,omitempty" form:"profil_photo,omitempty" `
 }
 type UserLoginRequest struct {
@@ -66,6 +72,8 @@ type CreateUserResponse struct {
 	Gender         string     `json:"gender"`
 	PhoneNumber    string     `json:"phone_number"`
 	Address        string     `json:"address"`
+	Lat            float64    `json:"lat" form:"lat" `
+	Lng            float64    `json:"lng" form:"lng" `
 	ProfilPhotoUrl string     `json:"profil_photo_url"`
 	CreatedAt      *time.Time `json:"created_at"`
 }
@@ -77,6 +85,8 @@ type EditUserResponse struct {
 	Gender         string     `json:"gender"`
 	PhoneNumber    string     `json:"phone_number"`
 	Address        string     `json:"address"`
+	Lat            float64    `json:"lat" form:"lat" `
+	Lng            float64    `json:"lng" form:"lng" `
 	ProfilPhotoUrl string     `json:"profil_photo_url"`
 	Updated_at     *time.Time `json:"updated_at"`
 }

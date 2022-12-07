@@ -35,6 +35,8 @@ type GetDonationHistoryResponse struct {
 		Title       string     `json:"title"`
 		Description string     `json:"description"`
 		Weight      int        `json:"weight"`
+		Lat         float64    `json:"lat"`
+		Lng         float64    `json:"lng"`
 		PhotoUrl    string     `json:"photo_url"`
 		Location    string     `json:"location"`
 		CreatedAt   *time.Time `json:"created_at"`

@@ -29,7 +29,7 @@ func (u userController) Register(ctx *gin.Context) {
 	if contentType == "application/json" {
 		err := ctx.ShouldBindJSON(&registerUser)
 		if err != nil {
-			response := helpers.GetResponse(true, http.StatusBadRequest, "request tidak valid", nil)
+			response := helpers.GetResponse(true, http.StatusBadRequest, err.Error(), nil)
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
 			return
 		}
@@ -58,6 +58,8 @@ func (u userController) Register(ctx *gin.Context) {
 		Gender:      registerUser.Gender,
 		PhoneNumber: registerUser.PhoneNumber,
 		Address:     registerUser.Address,
+		Lat:         registerUser.Lat,
+		Lng:         registerUser.Lng,
 	}
 
 	resp, err := u.UserRepository.Create(user)
@@ -123,6 +125,9 @@ func (u userController) Login(ctx *gin.Context) {
 		"full_name":        userResult.FullName,
 		"profil_photo_url": userResult.ProfilPhotoUrl,
 		"phone_number":     userResult.PhoneNumber,
+		"address":          userResult.Address,
+		"lat":              userResult.Lat,
+		"lng":              userResult.Lng,
 		"login_time":       time.Now(),
 		"token":            token,
 	})
@@ -170,6 +175,8 @@ func (u userController) Update(ctx *gin.Context) {
 		Gender:      request.Gender,
 		PhoneNumber: request.PhoneNumber,
 		Address:     request.Address,
+		Lat:         request.Lat,
+		Lng:         request.Lng,
 	}
 	result, err := u.UserRepository.Edit(userNameURL, newUserData)
 	if err != nil {

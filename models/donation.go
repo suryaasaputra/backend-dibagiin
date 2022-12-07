@@ -15,6 +15,8 @@ type Donation struct {
 	Title           string            `json:"title" form:"title" gorm:"not null;type:varchar" valid:"required~Title is required"`
 	Description     string            `json:"description" form:"description" gorm:"not null;type:varchar" valid:"required~Description is required"`
 	Weight          int               `json:"weight" form:"weight" gorm:"not null" valid:"required~Weight is required"`
+	Lat             float64           `json:"lat" form:"lat" gorm:"not null" valid:"required~Latitude is required"`
+	Lng             float64           `json:"lng" form:"lng" gorm:"not null" valid:"required~Longitude is required"`
 	PhotoUrl        string            `json:"photo_url" form:"photo_url" gorm:"not null;type:varchar" valid:"required~Photo URL is required"`
 	Location        string            `json:"location" form:"location" gorm:"not null;type:varchar" valid:"required~Location is required"`
 	Status          string            `json:"status" gorm:"not null;type:varchar;default:Tersedia"`
@@ -30,14 +32,18 @@ type CreateDonationRequest struct {
 	Title         string                `json:"title" form:"title"`
 	Description   string                `json:"description" form:"description"`
 	Weight        int                   `json:"weight" form:"weight"`
+	Lat           float64               `json:"lat" form:"lat"`
+	Lng           float64               `json:"lng" form:"lng"`
 	DonationPhoto *multipart.FileHeader `json:"donation_photo" form:"donation_photo"`
 	Location      string                `json:"location" form:"location"`
 }
 type EditDonationRequest struct {
-	Title       string `json:"title" form:"title"`
-	Description string `json:"description" form:"description"`
-	Weight      int    `json:"weight" form:"weight"`
-	Location    string `json:"location" form:"location"`
+	Title       string  `json:"title" form:"title"`
+	Description string  `json:"description" form:"description"`
+	Weight      int     `json:"weight" form:"weight"`
+	Location    string  `json:"location" form:"location"`
+	Lat         float64 `json:"lat" form:"lat"`
+	Lng         float64 `json:"lng" form:"lng"`
 }
 
 type CreateDonationResponse struct {
@@ -46,6 +52,8 @@ type CreateDonationResponse struct {
 	Title       string     `json:"title" `
 	Description string     `json:"description"`
 	Weight      int        `json:"weight"`
+	Lat         float64    `json:"lat"`
+	Lng         float64    `json:"lng"`
 	PhotoUrl    string     `json:"photo"`
 	Location    string     `json:"location"`
 	Status      string     `json:"status"`
@@ -60,6 +68,8 @@ type EditDonationResponse struct {
 	Weight      int        `json:"weight"`
 	PhotoUrl    string     `json:"photo"`
 	Location    string     `json:"location"`
+	Lat         float64    `json:"lat"`
+	Lng         float64    `json:"lng"`
 	Status      string     `json:"status"`
 	UpdatedAt   *time.Time `json:"updated_at"`
 }
