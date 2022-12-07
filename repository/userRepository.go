@@ -67,7 +67,7 @@ func (u UserDb) GetByEmail(email string) models.User {
 func (u UserDb) GetByUserName(userName string) models.GetUserResponse {
 	user := models.User{}
 
-	u.db.Preload("Donation").Preload("Donation.User").Preload("Donation.Taker").Where("user_name =? ", userName).First(&user)
+	u.db.Preload("Donation").Preload("Donation.User").Preload("Donation.Taker").Preload("Donation.DonationRequest").Where("user_name =? ", userName).First(&user)
 	response := models.GetUserResponse{
 		ID:             user.ID,
 		UserName:       user.UserName,
@@ -82,17 +82,19 @@ func (u UserDb) GetByUserName(userName string) models.GetUserResponse {
 	}
 	for _, v := range user.Donation {
 		var donation = struct {
-			ID          string     `json:"id"`
-			Title       string     `json:"title"`
-			Description string     `json:"description"`
-			Weight      int        `json:"weight"`
-			PhotoUrl    string     `json:"photo_url"`
-			Location    string     `json:"location"`
-			Status      string     `json:"status"`
-			TakerID     *string    `json:"taker_id"`
-			CreatedAt   *time.Time `json:"created_at"`
-			UpdatedAt   *time.Time `json:"updated_at"`
-			Donator     struct {
+			ID              string                   `json:"id"`
+			Title           string                   `json:"title"`
+			Description     string                   `json:"description"`
+			Weight          int                      `json:"weight"`
+			PhotoUrl        string                   `json:"photo_url"`
+			Location        string                   `json:"location"`
+			Status          string                   `json:"status"`
+			Request         []string                 `json:"requester_id"`
+			DonationRequest []models.DonationRequest `json:"-"`
+			TakerID         *string                  `json:"taker_id"`
+			CreatedAt       *time.Time               `json:"created_at"`
+			UpdatedAt       *time.Time               `json:"updated_at"`
+			Donator         struct {
 				ID             string `json:"id"`
 				UserName       string `json:"user_name"`
 				FullName       string `json:"full_name"`
@@ -129,6 +131,10 @@ func (u UserDb) GetByUserName(userName string) models.GetUserResponse {
 			donation.Taker.PhoneNumber = v.Taker.PhoneNumber
 			donation.Taker.ProfilPhotoUrl = v.Taker.ProfilPhotoUrl
 		}
+		for _, r := range donation.DonationRequest {
+			donation.Request = append(donation.Request, r.UserID)
+		}
+
 		response.Donation = append(response.Donation, donation)
 	}
 

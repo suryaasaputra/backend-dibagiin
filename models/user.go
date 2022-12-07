@@ -91,17 +91,19 @@ type GetUserResponse struct {
 	Address        string `json:"address"`
 	ProfilPhotoUrl string `json:"profil_photo_url"`
 	Donation       []struct {
-		ID          string     `json:"id"`
-		Title       string     `json:"title"`
-		Description string     `json:"description"`
-		Weight      int        `json:"weight"`
-		PhotoUrl    string     `json:"photo_url"`
-		Location    string     `json:"location"`
-		Status      string     `json:"status"`
-		TakerID     *string    `json:"taker_id"`
-		CreatedAt   *time.Time `json:"created_at"`
-		UpdatedAt   *time.Time `json:"updated_at"`
-		Donator     struct {
+		ID              string            `json:"id"`
+		Title           string            `json:"title"`
+		Description     string            `json:"description"`
+		Weight          int               `json:"weight"`
+		PhotoUrl        string            `json:"photo_url"`
+		Location        string            `json:"location"`
+		Status          string            `json:"status"`
+		Request         []string          `json:"requester_id"`
+		DonationRequest []DonationRequest `json:"-"`
+		TakerID         *string           `json:"taker_id"`
+		CreatedAt       *time.Time        `json:"created_at"`
+		UpdatedAt       *time.Time        `json:"updated_at"`
+		Donator         struct {
 			ID             string `json:"id"`
 			UserName       string `json:"user_name"`
 			FullName       string `json:"full_name"`
