@@ -109,6 +109,7 @@ func (u UserDb) GetByUserName(userName string) models.GetUserResponse {
 				ProfilPhotoUrl string `json:"profil_photo_url,omitempty"`
 			} `json:"taker"`
 		}{}
+		donation.DonationRequest = v.DonationRequest
 		donation.ID = v.ID
 		donation.Title = v.Title
 		donation.Description = v.Description
