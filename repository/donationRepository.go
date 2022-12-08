@@ -237,6 +237,8 @@ func (d DonationDb) Edit(id string, new_data models.EditDonationRequest) (models
 		Title:       new_data.Title,
 		Description: new_data.Description,
 		Location:    new_data.Location,
+		Lat:         new_data.Lat,
+		Lng:         new_data.Lng,
 	}).Error
 
 	if err != nil {
