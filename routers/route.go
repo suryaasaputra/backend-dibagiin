@@ -94,6 +94,7 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 		requestRouter.Use(mdl.UserMiddleware.Authentication())
 		// get user submitted request
 		requestRouter.GET("", ctl.DonationRequestController.GetAllByUserId)
+		requestRouter.DELETE("/:requestId", ctl.DonationRequestController.Delete)
 	}
 	historyRouter := r.Group("/history")
 	{

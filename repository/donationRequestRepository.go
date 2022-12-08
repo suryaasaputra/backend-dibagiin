@@ -16,6 +16,7 @@ type IDonationRequestRepository interface {
 	Create(models.DonationRequest) (models.CreateDonationRequestResponse, error)
 	Confirm(string) error
 	Reject(string) error
+	Delete(string) error
 }
 
 type DonationRequestDb struct {
@@ -333,6 +334,21 @@ func (d DonationRequestDb) Reject(id string) error {
 		Message:           "menolak permintaan anda",
 	}
 	err = d.db.Create(&donationHistory).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d DonationRequestDb) Delete(id string) error {
+	DonationHistory := models.DonationHistory{}
+	err := d.db.Where("donation_request_id=?", id).Delete(&DonationHistory).Error
+	if err != nil {
+		return err
+	}
+
+	DonationRequest := models.DonationRequest{}
+	err = d.db.Where("id=?", id).Delete(&DonationRequest).Error
 	if err != nil {
 		return err
 	}

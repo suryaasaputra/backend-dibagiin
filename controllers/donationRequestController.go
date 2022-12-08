@@ -136,3 +136,16 @@ func (d donationRequestController) Reject(ctx *gin.Context) {
 	response := helpers.GetResponse(false, http.StatusOK, "Tolak permintaan berhasil", nil)
 	ctx.JSON(http.StatusOK, response)
 }
+
+func (d donationRequestController) Delete(ctx *gin.Context) {
+	id := ctx.Param("requestId")
+
+	err := d.DonationRequestRepository.Delete(id)
+	if err != nil {
+		response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
+		return
+	}
+	response := helpers.GetResponse(false, http.StatusOK, "Sukses batalkan permintaan", nil)
+	ctx.JSON(http.StatusOK, response)
+}
