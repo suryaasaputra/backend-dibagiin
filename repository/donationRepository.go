@@ -153,7 +153,7 @@ func (d DonationDb) GetAllByLocation(location string) ([]models.GetDonationsResp
 func (d DonationDb) GetAllByKeyword(keyword string) ([]models.GetDonationsResponse, error) {
 	donations := []models.Donation{}
 	lowerKeyword := strings.ToLower(keyword)
-	err := d.db.Where("lower(title) LIKE ?", "%"+lowerKeyword+"%").Preload(clause.Associations).Order("created_at desc").Find(&donations).Error
+	err := d.db.Where("lower(title) LIKE ?", "%"+lowerKeyword+"%").Or("lower(location) LIKE ?", "%"+lowerKeyword+"%").Preload(clause.Associations).Order("created_at desc").Find(&donations).Error
 	if err != nil {
 		return nil, err
 	}
