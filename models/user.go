@@ -151,7 +151,11 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 	u.UserName = lowerCase
 	u.Password = hashedPassword
 	if u.ProfilPhotoUrl == "" {
-		u.ProfilPhotoUrl = config.STORAGE_PATH + "/profil_photo/default.png"
+		if u.Gender == "wanita" {
+			u.ProfilPhotoUrl = config.STORAGE_PATH + "/profil_photo/default-girl.png"
+		} else {
+			u.ProfilPhotoUrl = config.STORAGE_PATH + "/profil_photo/default-man.png"
+		}
 	}
 	return nil
 }
