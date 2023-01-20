@@ -110,5 +110,7 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 		PORT = "8080"
 	}
 
-	return r.Run(":" + PORT)
+	// return r.Run(":" + PORT)
+	return r.RunTLS(":"+PORT, "./cert/certificate.crt", "./cert/private.key")
+
 }
