@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
+func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) (error, error) {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
@@ -110,7 +110,95 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 		PORT = "8080"
 	}
 
+	rTLS := gin.Default()
+
+	rTLS.Use(cors.New(config))
+	rTLS.GET("/", ctl.HomeController)
+	// r.GET("/.well-known/pki-validation", ctl.HomeController)
+
+	//manual login
+	rTLS.POST("/register", ctl.UserController.Register)
+	rTLS.POST("/login", ctl.UserController.Login)
+
+	userRouter2 := rTLS.Group("/user")
+	{
+		//check username or email exist
+		userRouter2.GET("", ctl.UserController.CheckUser)
+
+		// Token authentication
+		userRouter2.Use(mdl.UserMiddleware.Authentication())
+		// get one user data
+		userRouter2.GET("/:userName", ctl.UserController.GetUser)
+
+		// check user have access or not
+		userRouter2.Use(mdl.UserMiddleware.Authorization())
+
+		//set user profil picture
+		userRouter2.PUT("/:userName/ProfilPhoto", ctl.UserController.SetProfilePhoto)
+
+		//edit user data
+		userRouter2.PUT("/:userName", ctl.UserController.Update)
+
+		//delete user account
+		userRouter2.DELETE("/:userName", ctl.UserController.Delete)
+	}
+	donationRouter2 := rTLS.Group("/donation")
+	{
+
+		// Token authentication
+		donationRouter2.Use(mdl.UserMiddleware.Authentication())
+
+		// create a new donation
+		donationRouter2.POST("", ctl.DonationController.Create)
+
+		// get all donation
+		donationRouter2.GET("", ctl.DonationController.GetAll)
+
+		// get one donation by id
+		donationRouter2.GET("/:donationId", ctl.DonationController.GetDonationById)
+
+		// request to claim a donation from another user
+		donationRouter2.POST("/:donationId/request", mdl.DonationMiddleware.CheckDonator(), mdl.DonationRequestMiddleware.CheckIfExist(), ctl.DonationRequestController.Create)
+
+		//get all request in donation
+		donationRouter2.GET("/:donationId/request", ctl.DonationRequestController.GetAllByDonationId)
+
+		// get all donation request
+		donationRouter2.GET("/request", ctl.DonationRequestController.GetAllByDonatorId)
+
+		// get one donation request
+		donationRouter2.GET("/request/:donationRequestId", ctl.DonationRequestController.GetById)
+
+		// confirm a request
+		donationRouter2.POST("/request/:donationRequestId/confirm", mdl.DonationRequestMiddleware.Authorization(), mdl.DonationHistoryMiddleware.CheckIfExist(), ctl.DonationRequestController.Confirm)
+		// reject a request
+		donationRouter2.POST("/request/:donationRequestId/reject", mdl.DonationRequestMiddleware.Authorization(), mdl.DonationHistoryMiddleware.CheckIfExist(), ctl.DonationRequestController.Reject)
+
+		// donation authorization
+		donationRouter2.Use(mdl.DonationMiddleware.Authorization())
+		// edit donation data
+		donationRouter2.PUT("/:donationId", ctl.DonationController.Edit)
+
+		// delete donation
+		donationRouter2.DELETE("/:donationId", ctl.DonationController.Delete)
+
+	}
+
+	requestRouter2 := rTLS.Group("/request")
+	{
+		requestRouter2.Use(mdl.UserMiddleware.Authentication())
+		// get user submitted request
+		requestRouter2.GET("", ctl.DonationRequestController.GetAllByUserId)
+		requestRouter2.DELETE("/:requestId", ctl.DonationRequestController.Delete)
+	}
+	historyRouter2 := rTLS.Group("/history")
+	{
+		historyRouter2.Use(mdl.UserMiddleware.Authentication())
+		// get history
+		historyRouter2.GET("", ctl.DonationHistoryController.GetAllByUserId)
+	}
+
 	// return r.Run(":" + PORT)
-	return r.RunTLS(":443", "./cert/certificate.crt", "./cert/private.key")
+	return r.Run(":" + PORT), rTLS.RunTLS(":443", "./cert/certificate.crt", "./cert/private.key")
 
 }
