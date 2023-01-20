@@ -19,7 +19,7 @@ services:
       - dibagi-network
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
-  dibagiApp:
+  dibagiapp:
     container_name: golangServer
     build: .
     ports:
