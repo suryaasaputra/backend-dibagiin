@@ -111,6 +111,6 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 	}
 
 	// return r.Run(":" + PORT)
-	return r.RunTLS(":"+PORT, "./cert/certificate.crt", "./cert/private.key")
+	return r.RunTLS(":443", "./cert/certificate.crt", "./cert/private.key")
 
 }
