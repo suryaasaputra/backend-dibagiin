@@ -10,6 +10,8 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
+      - POSTGRES_DB=dibagi_app
+      - DATABASE_HOST=postgresDB
       - APP_DB_USER=docker
       - APP_DB_PASS=docker
       - APP_DB_NAME=dibagi_app
