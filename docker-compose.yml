@@ -6,6 +6,7 @@ services:
     image: postgres:latest
     ports:
       -  5432:5432
+    restart: unless-stopped
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
@@ -25,6 +26,7 @@ services:
       - 80:8080
     depends_on:
       - postgresDB
+    restart: on-failure
     environment:
       - DB_HOST=postgresDB
       - DB_NAME=dibagi_app
@@ -38,6 +40,17 @@ services:
       - BUCKET_SA_CR=dibagi-in-key.json
     networks:
       - dibagi-network
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_container
+    environment:
+      PGADMIN_DEFAULT_EMAIL: live@admin.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - "5050:80"
+    networks:
+      - fullstack
+    restart: unless-stopped
 
 networks:
   dibagi-network:
