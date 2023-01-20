@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) (error, error) {
+func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
@@ -20,7 +20,6 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) (error,
 	config.AllowCredentials = true
 	r.Use(cors.New(config))
 	r.GET("/", ctl.HomeController)
-	r.StaticFile("/.well-known/pki-validation/67947117BCCC6E7F5087A16C09F9B136.txt", "./67947117BCCC6E7F5087A16C09F9B136.txt")
 	// r.GET("/.well-known/pki-validation", ctl.HomeController)
 
 	//manual login
@@ -110,6 +109,8 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) (error,
 		PORT = "8080"
 	}
 
+	go r.Run(":" + PORT)
+
 	rTLS := gin.Default()
 
 	rTLS.Use(cors.New(config))
@@ -198,7 +199,7 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) (error,
 		historyRouter2.GET("", ctl.DonationHistoryController.GetAllByUserId)
 	}
 
-	// return r.Run(":" + PORT)
-	return r.Run(":" + PORT), rTLS.RunTLS(":443", "./cert/certificate.crt", "./cert/private.key")
+	// return
+	return rTLS.RunTLS(":443", "./cert/certificate.crt", "./cert/private.key")
 
 }

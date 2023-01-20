@@ -33,12 +33,8 @@ func main() {
 	controller := controllers.NewController(userController, donationController, donationRequestController, donationHistoryController)
 	middleware := middlewares.NewMiddleware(userMiddleware, donationMiddleware, donationRequestMiddleware, donationHistoryMiddleware)
 
-	err, err2 := routers.StartServer(controller, middleware)
+	err = routers.StartServer(controller, middleware)
 	if err != nil {
-		fmt.Println("error starting server", err)
-		return
-	}
-	if err2 != nil {
 		fmt.Println("error starting server", err)
 		return
 	}
