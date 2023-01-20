@@ -20,6 +20,8 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 	config.AllowCredentials = true
 	r.Use(cors.New(config))
 	r.GET("/", ctl.HomeController)
+	r.StaticFile("/.well-known/pki-validation/67947117BCCC6E7F5087A16C09F9B136.txt", "./67947117BCCC6E7F5087A16C09F9B136.txt")
+	// r.GET("/.well-known/pki-validation", ctl.HomeController)
 
 	//manual login
 	r.POST("/register", ctl.UserController.Register)
