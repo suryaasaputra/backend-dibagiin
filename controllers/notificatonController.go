@@ -10,20 +10,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type donationHistoryController struct {
-	DonationHistoryRepository repository.IDonationHistoryRepository
+type notificationController struct {
+	NotificationRepository repository.INotificationRepository
 }
 
-func NewDonationHistoryController(dr repository.IDonationHistoryRepository) *donationHistoryController {
-	return &donationHistoryController{
-		DonationHistoryRepository: dr,
+func NewNotificationController(dr repository.INotificationRepository) *notificationController {
+	return &notificationController{
+		NotificationRepository: dr,
 	}
 }
 
-func (d donationHistoryController) GetAllByUserId(ctx *gin.Context) {
+func (d notificationController) GetAllByUserId(ctx *gin.Context) {
 	userData := ctx.MustGet("userData").(jwt.MapClaims)
 	userId := fmt.Sprintf("%v", userData["id"])
-	result, err := d.DonationHistoryRepository.GetAllByUserId(userId)
+	result, err := d.NotificationRepository.GetAllByUserId(userId)
 	if err != nil {
 		response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)

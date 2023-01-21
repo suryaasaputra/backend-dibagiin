@@ -30,7 +30,7 @@ type User struct {
 	TakenDonation    []Donation        `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:TakerID"`
 	DonationRequest  []DonationRequest `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:UserID"`
 	SubmittedRequest []DonationRequest `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:DonatorID"`
-	DonationHistory  []DonationHistory `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Notification     []Notification    `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 type UserRegisterRequest struct {

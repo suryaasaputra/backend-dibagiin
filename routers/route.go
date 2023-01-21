@@ -63,22 +63,20 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 		// get one donation by id
 		donationRouter.GET("/:donationId", ctl.DonationController.GetDonationById)
 
-		// request to claim a donation from another user
+		// send request to claim a donation from another user
 		donationRouter.POST("/:donationId/request", mdl.DonationMiddleware.CheckDonator(), mdl.DonationRequestMiddleware.CheckIfExist(), ctl.DonationRequestController.Create)
 
 		//get all request in donation
 		donationRouter.GET("/:donationId/request", ctl.DonationRequestController.GetAllByDonationId)
 
-		// get all donation request
-		donationRouter.GET("/request", ctl.DonationRequestController.GetAllByDonatorId)
+		// get user submitted request
+		donationRouter.GET("/request", ctl.DonationRequestController.GetAllByUserId)
 
 		// get one donation request
 		donationRouter.GET("/request/:donationRequestId", ctl.DonationRequestController.GetById)
 
-		// confirm a request
-		donationRouter.POST("/request/:donationRequestId/confirm", mdl.DonationRequestMiddleware.Authorization(), mdl.DonationHistoryMiddleware.CheckIfExist(), ctl.DonationRequestController.Confirm)
-		// reject a request
-		donationRouter.POST("/request/:donationRequestId/reject", mdl.DonationRequestMiddleware.Authorization(), mdl.DonationHistoryMiddleware.CheckIfExist(), ctl.DonationRequestController.Reject)
+		// cancel request
+		donationRouter.DELETE("/request/:requestId", ctl.DonationRequestController.Delete)
 
 		// donation authorization
 		donationRouter.Use(mdl.DonationMiddleware.Authorization())
@@ -93,15 +91,19 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 	requestRouter := r.Group("/request")
 	{
 		requestRouter.Use(mdl.UserMiddleware.Authentication())
-		// get user submitted request
-		requestRouter.GET("", ctl.DonationRequestController.GetAllByUserId)
-		requestRouter.DELETE("/:requestId", ctl.DonationRequestController.Delete)
+		// get all donation request
+		requestRouter.GET("", ctl.DonationRequestController.GetAllByDonatorId)
+		// confirm a request
+		requestRouter.POST("/:donationRequestId", mdl.DonationRequestMiddleware.Authorization(), mdl.NotificationMiddleware.CheckIfExist(), ctl.DonationRequestController.Confirm)
+		// reject a request
+		requestRouter.DELETE("/:donationRequestId", mdl.DonationRequestMiddleware.Authorization(), mdl.NotificationMiddleware.CheckIfExist(), ctl.DonationRequestController.Reject)
+
 	}
-	historyRouter := r.Group("/history")
+	notificationRouter := r.Group("/notification")
 	{
-		historyRouter.Use(mdl.UserMiddleware.Authentication())
-		// get history
-		historyRouter.GET("", ctl.DonationHistoryController.GetAllByUserId)
+		notificationRouter.Use(mdl.UserMiddleware.Authentication())
+		// get notification
+		notificationRouter.GET("", ctl.NotificationController.GetAllByUserId)
 	}
 
 	var PORT = os.Getenv("PORT")
@@ -158,22 +160,20 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 		// get one donation by id
 		donationRouter2.GET("/:donationId", ctl.DonationController.GetDonationById)
 
-		// request to claim a donation from another user
+		// send request to claim a donation from another user
 		donationRouter2.POST("/:donationId/request", mdl.DonationMiddleware.CheckDonator(), mdl.DonationRequestMiddleware.CheckIfExist(), ctl.DonationRequestController.Create)
 
 		//get all request in donation
 		donationRouter2.GET("/:donationId/request", ctl.DonationRequestController.GetAllByDonationId)
 
-		// get all donation request
-		donationRouter2.GET("/request", ctl.DonationRequestController.GetAllByDonatorId)
+		// get user submitted request
+		donationRouter2.GET("/request", ctl.DonationRequestController.GetAllByUserId)
 
 		// get one donation request
 		donationRouter2.GET("/request/:donationRequestId", ctl.DonationRequestController.GetById)
 
-		// confirm a request
-		donationRouter2.POST("/request/:donationRequestId/confirm", mdl.DonationRequestMiddleware.Authorization(), mdl.DonationHistoryMiddleware.CheckIfExist(), ctl.DonationRequestController.Confirm)
-		// reject a request
-		donationRouter2.POST("/request/:donationRequestId/reject", mdl.DonationRequestMiddleware.Authorization(), mdl.DonationHistoryMiddleware.CheckIfExist(), ctl.DonationRequestController.Reject)
+		// cancel request
+		donationRouter2.DELETE("/request/:requestId", ctl.DonationRequestController.Delete)
 
 		// donation authorization
 		donationRouter2.Use(mdl.DonationMiddleware.Authorization())
@@ -185,18 +185,21 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 
 	}
 
-	requestRouter2 := rTLS.Group("/request")
+	requestRouter2 := r.Group("/request")
 	{
 		requestRouter2.Use(mdl.UserMiddleware.Authentication())
-		// get user submitted request
-		requestRouter2.GET("", ctl.DonationRequestController.GetAllByUserId)
-		requestRouter2.DELETE("/:requestId", ctl.DonationRequestController.Delete)
+		// get all donation request
+		requestRouter2.GET("", ctl.DonationRequestController.GetAllByDonatorId)
+		// confirm a request
+		requestRouter2.POST("/:donationRequestId", mdl.DonationRequestMiddleware.Authorization(), mdl.NotificationMiddleware.CheckIfExist(), ctl.DonationRequestController.Confirm)
+		// reject a request
+		requestRouter2.DELETE("/:donationRequestId", mdl.DonationRequestMiddleware.Authorization(), mdl.NotificationMiddleware.CheckIfExist(), ctl.DonationRequestController.Reject)
 	}
-	historyRouter2 := rTLS.Group("/history")
+	notificationRouter2 := rTLS.Group("/notification")
 	{
-		historyRouter2.Use(mdl.UserMiddleware.Authentication())
-		// get history
-		historyRouter2.GET("", ctl.DonationHistoryController.GetAllByUserId)
+		notificationRouter2.Use(mdl.UserMiddleware.Authentication())
+		// get notification
+		notificationRouter2.GET("", ctl.NotificationController.GetAllByUserId)
 	}
 
 	// return

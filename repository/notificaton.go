@@ -7,30 +7,30 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-type IDonationHistoryRepository interface {
-	GetAllByUserId(string) ([]models.GetDonationHistoryResponse, error)
-	GetAllByDonationRequestId(string) ([]models.DonationHistory, error)
+type INotificationRepository interface {
+	GetAllByUserId(string) ([]models.GetNotificationResponse, error)
+	GetAllByDonationRequestId(string) ([]models.Notification, error)
 }
 
-type DonationHistoryDB struct {
+type NotificationDB struct {
 	db *gorm.DB
 }
 
-func NewDonationHistoryRepository(db *gorm.DB) *DonationHistoryDB {
-	return &DonationHistoryDB{
+func NewNotificationRepository(db *gorm.DB) *NotificationDB {
+	return &NotificationDB{
 		db: db,
 	}
 }
 
-func (d DonationHistoryDB) GetAllByUserId(userId string) ([]models.GetDonationHistoryResponse, error) {
-	donationHistory := []models.DonationHistory{}
-	err := d.db.Preload("User").Preload("Donation").Preload("Donation.User").Preload("DonationRequest").Preload("DonationRequest.User").Where("user_id=?", userId).Order("created_at desc").Find(&donationHistory).Error
+func (d NotificationDB) GetAllByUserId(userId string) ([]models.GetNotificationResponse, error) {
+	notification := []models.Notification{}
+	err := d.db.Preload("User").Preload("Donation").Preload("Donation.User").Preload("DonationRequest").Preload("DonationRequest.User").Where("user_id=?", userId).Order("created_at desc").Find(&notification).Error
 	if err != nil {
 		return nil, err
 	}
-	listHistory := []models.GetDonationHistoryResponse{}
-	for _, v := range donationHistory {
-		response := models.GetDonationHistoryResponse{
+	listHistory := []models.GetNotificationResponse{}
+	for _, v := range notification {
+		response := models.GetNotificationResponse{
 			ID:                v.ID,
 			UserID:            v.UserID,
 			DonationID:        v.DonationID,
@@ -83,12 +83,12 @@ func (d DonationHistoryDB) GetAllByUserId(userId string) ([]models.GetDonationHi
 	}
 	return listHistory, nil
 }
-func (d DonationHistoryDB) GetAllByDonationRequestId(donationRequestId string) ([]models.DonationHistory, error) {
-	donationHistory := []models.DonationHistory{}
-	err := d.db.Preload(clause.Associations).Where("donation_request_id=?", donationRequestId).Find(&donationHistory).Error
+func (d NotificationDB) GetAllByDonationRequestId(donationRequestId string) ([]models.Notification, error) {
+	notification := []models.Notification{}
+	err := d.db.Preload(clause.Associations).Where("donation_request_id=?", donationRequestId).Find(&notification).Error
 	if err != nil {
 		return nil, err
 	}
 
-	return donationHistory, nil
+	return notification, nil
 }

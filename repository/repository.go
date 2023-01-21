@@ -16,7 +16,7 @@ func NewDB() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	err = db.Debug().AutoMigrate(models.User{}, models.Donation{}, models.DonationRequest{}, models.DonationHistory{})
+	err = db.Debug().AutoMigrate(models.User{}, models.Donation{}, models.DonationRequest{}, models.Notification{})
 	if err != nil {
 		fmt.Println("error migrating Repository", err)
 		return nil, err
