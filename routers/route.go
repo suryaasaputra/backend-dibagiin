@@ -230,6 +230,6 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 	}
 
 	// return
-	return rTLS.RunTLS(":443", "./cert/certificate.crt", "./cert/private.key")
+	return rTLS.RunTLS(":443", "./cert/ca_bundle.crt", "./cert/private.key")
 
 }
