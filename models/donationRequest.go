@@ -22,7 +22,7 @@ type DonationRequest struct {
 	UpdatedAt  *time.Time `json:"updated_at"`
 }
 type CreateDonationRequestRequest struct {
-	Message string `json:"message" form:"message"`
+	Message string `json:"message" form:"message" example:"Minta bang"`
 }
 type CreateDonationRequestResponse struct {
 	ID         string     `json:"id" `

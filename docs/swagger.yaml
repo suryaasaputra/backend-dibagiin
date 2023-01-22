@@ -1,0 +1,996 @@
+definitions:
+  helpers.Response:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data: {}
+      error:
+        example: false
+        type: boolean
+      message:
+        example: success
+        type: string
+    type: object
+  models.CreateDonationRequest:
+    type: object
+  models.CreateDonationRequestRequest:
+    properties:
+      message:
+        type: string
+    type: object
+  models.CreateDonationRequestResponse:
+    properties:
+      created_at:
+        type: string
+      donation_id:
+        type: string
+      donator_id:
+        type: string
+      id:
+        type: string
+      message:
+        type: string
+      status:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.CreateDonationResponse:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      lat:
+        type: number
+      lng:
+        type: number
+      location:
+        type: string
+      photo:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: string
+      weight:
+        type: integer
+    type: object
+  models.CreateUserResponse:
+    properties:
+      address:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      gender:
+        type: string
+      id:
+        type: string
+      lat:
+        type: number
+      lng:
+        type: number
+      phone_number:
+        type: string
+      profil_photo_url:
+        type: string
+      user_name:
+        type: string
+    type: object
+  models.EditDonationRequest:
+    properties:
+      description:
+        type: string
+      lat:
+        type: number
+      lng:
+        type: number
+      location:
+        type: string
+      title:
+        type: string
+      weight:
+        type: integer
+    type: object
+  models.EditDonationResponse:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      lat:
+        type: number
+      lng:
+        type: number
+      location:
+        type: string
+      photo:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+      weight:
+        type: integer
+    type: object
+  models.EditUserRequest:
+    properties:
+      address:
+        example: Jakarta
+        type: string
+      email:
+        example: user@mail.com
+        type: string
+      full_name:
+        example: Full Name
+        type: string
+      gender:
+        example: Male
+        type: string
+      lat:
+        example: -6.20104
+        type: number
+      lng:
+        example: 106.816666
+        type: number
+      phone_number:
+        example: "+62890123456"
+        type: string
+      user_name:
+        example: user_name
+        type: string
+    type: object
+  models.EditUserResponse:
+    properties:
+      address:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      gender:
+        type: string
+      id:
+        type: string
+      lat:
+        type: number
+      lng:
+        type: number
+      phone_number:
+        type: string
+      profil_photo_url:
+        type: string
+      updated_at:
+        type: string
+      user_name:
+        type: string
+    type: object
+  models.GetDonationRequestResponse:
+    properties:
+      created_at:
+        type: string
+      donation:
+        properties:
+          created_at:
+            type: string
+          description:
+            type: string
+          id:
+            type: string
+          location:
+            type: string
+          photo_url:
+            type: string
+          title:
+            type: string
+          updated_at:
+            type: string
+          weight:
+            type: integer
+        type: object
+      donation_id:
+        type: string
+      donator:
+        properties:
+          full_name:
+            type: string
+          id:
+            type: string
+          phone_number:
+            type: string
+          profil_photo_url:
+            type: string
+          user_name:
+            type: string
+        type: object
+      donator_id:
+        type: string
+      id:
+        type: string
+      message:
+        type: string
+      status:
+        type: string
+      updated_at:
+        type: string
+      user:
+        properties:
+          full_name:
+            type: string
+          id:
+            type: string
+          phone_number:
+            type: string
+          profil_photo_url:
+            type: string
+          user_name:
+            type: string
+        type: object
+      user_id:
+        type: string
+    type: object
+  models.GetDonationsResponse:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      donator:
+        properties:
+          full_name:
+            type: string
+          id:
+            type: string
+          phone_number:
+            type: string
+          profil_photo_url:
+            type: string
+          user_name:
+            type: string
+        type: object
+      id:
+        type: string
+      lat:
+        type: number
+      lng:
+        type: number
+      location:
+        type: string
+      photo_url:
+        type: string
+      requester_id:
+        items:
+          type: string
+        type: array
+      status:
+        type: string
+      taker:
+        properties:
+          full_name:
+            type: string
+          id:
+            type: string
+          phone_number:
+            type: string
+          profil_photo_url:
+            type: string
+          user_name:
+            type: string
+        type: object
+      taker_id:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      weight:
+        type: integer
+    type: object
+  models.GetNotificationResponse:
+    properties:
+      created_at:
+        type: string
+      donation:
+        properties:
+          created_at:
+            type: string
+          description:
+            type: string
+          donator:
+            properties:
+              full_name:
+                type: string
+              id:
+                type: string
+              phone_number:
+                type: string
+              profil_photo_url:
+                type: string
+              user_name:
+                type: string
+            type: object
+          id:
+            type: string
+          lat:
+            type: number
+          lng:
+            type: number
+          location:
+            type: string
+          photo_url:
+            type: string
+          title:
+            type: string
+          updated_at:
+            type: string
+          weight:
+            type: integer
+        type: object
+      donation_id:
+        type: string
+      donation_request:
+        properties:
+          created_at:
+            type: string
+          donation_id:
+            type: string
+          donator_id:
+            type: string
+          id:
+            type: string
+          message:
+            type: string
+          requester:
+            properties:
+              full_name:
+                type: string
+              id:
+                type: string
+              phone_number:
+                type: string
+              profil_photo_url:
+                type: string
+              user_name:
+                type: string
+            type: object
+          status:
+            type: string
+          updated_at:
+            type: string
+          user_id:
+            type: string
+        type: object
+      donation_request_id:
+        type: string
+      id:
+        type: string
+      message:
+        type: string
+      type:
+        type: string
+      updated_at:
+        type: string
+      user:
+        properties:
+          full_name:
+            type: string
+          id:
+            type: string
+          phone_number:
+            type: string
+          profil_photo_url:
+            type: string
+          user_name:
+            type: string
+        type: object
+      user_id:
+        type: string
+    type: object
+  models.GetUserResponse:
+    properties:
+      address:
+        type: string
+      created_at:
+        type: string
+      donation:
+        items:
+          properties:
+            created_at:
+              type: string
+            description:
+              type: string
+            donator:
+              properties:
+                full_name:
+                  type: string
+                id:
+                  type: string
+                phone_number:
+                  type: string
+                profil_photo_url:
+                  type: string
+                user_name:
+                  type: string
+              type: object
+            id:
+              type: string
+            location:
+              type: string
+            photo_url:
+              type: string
+            requester_id:
+              items:
+                type: string
+              type: array
+            status:
+              type: string
+            taker:
+              properties:
+                full_name:
+                  type: string
+                id:
+                  type: string
+                phone_number:
+                  type: string
+                profil_photo_url:
+                  type: string
+                user_name:
+                  type: string
+              type: object
+            taker_id:
+              type: string
+            title:
+              type: string
+            updated_at:
+              type: string
+            weight:
+              type: integer
+          type: object
+        type: array
+      email:
+        type: string
+      full_name:
+        type: string
+      gender:
+        type: string
+      id:
+        type: string
+      phone_number:
+        type: string
+      profil_photo_url:
+        type: string
+      updated_at:
+        type: string
+      user_name:
+        type: string
+    type: object
+  models.LoginUserResponse:
+    properties:
+      address:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+      lat:
+        type: number
+      lng:
+        type: number
+      login_time:
+        type: string
+      phone_number:
+        type: string
+      profil_photo_url:
+        type: string
+      token:
+        type: string
+      user_name:
+        type: string
+    type: object
+  models.SetProfilePhotoRequest:
+    type: object
+  models.UserLoginRequest:
+    properties:
+      email:
+        example: tes@mail.com
+        type: string
+      password:
+        example: pass1234
+        type: string
+    type: object
+  models.UserRegisterRequest:
+    properties:
+      address:
+        example: Jakarta
+        type: string
+      email:
+        example: user@mail.com
+        type: string
+      full_name:
+        example: Full Name
+        type: string
+      gender:
+        example: Male
+        type: string
+      lat:
+        example: -6.20104
+        type: number
+      lng:
+        example: 106.816666
+        type: number
+      password:
+        example: pass1234
+        type: string
+      phone_number:
+        example: "+62890123456"
+        type: string
+      user_name:
+        example: user_name
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /donation:
+    get:
+      consumes:
+      - application/json
+      description: Get list donation
+      parameters:
+      - description: availability
+        in: path
+        name: available
+        type: boolean
+      - description: keyword
+        in: path
+        name: keyword
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.GetDonationsResponse'
+                  type: array
+              type: object
+      summary: Get All Donation
+      tags:
+      - Donation
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create new donation
+      parameters:
+      - description: Donation data
+        in: body
+        name: donation
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateDonationRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.CreateDonationResponse'
+              type: object
+      summary: Create Donation
+      tags:
+      - Donation
+  /donation/{donation_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete donation  by id
+      parameters:
+      - description: Donation ID
+        in: path
+        name: donation_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      summary: Delete Donation
+      tags:
+      - Donation
+    get:
+      consumes:
+      - application/json
+      description: Get donation detail by id
+      parameters:
+      - description: Donation ID
+        in: path
+        name: donation_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.GetDonationsResponse'
+              type: object
+      summary: Get Donation Detail
+      tags:
+      - Donation
+    put:
+      consumes:
+      - application/json
+      description: Edit donation detail by id
+      parameters:
+      - description: Donation data
+        in: body
+        name: donation
+        required: true
+        schema:
+          $ref: '#/definitions/models.EditDonationRequest'
+      - description: Donation ID
+        in: path
+        name: donation_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.EditDonationResponse'
+              type: object
+      summary: Edit Donation Detail
+      tags:
+      - Donation
+  /donation/{donation_id}/request:
+    post:
+      consumes:
+      - application/json
+      description: Send request to claim donation
+      parameters:
+      - description: Donation ID
+        in: path
+        name: donation_id
+        required: true
+        type: string
+      - description: Donation request body
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateDonationRequestRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.CreateDonationRequestResponse'
+              type: object
+      summary: Send Donation Request
+      tags:
+      - Donation Request
+  /donation/request:
+    get:
+      consumes:
+      - application/json
+      description: Get all submitted donation request
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.GetDonationRequestResponse'
+              type: object
+      summary: Get All Submitted Donation Request
+      tags:
+      - Donation Request
+  /donation/request/{donationRequest_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Cancel Send donation request
+      parameters:
+      - description: Donation Request ID
+        in: path
+        name: donationRequest_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      summary: Cancel Send Donation Request
+      tags:
+      - Donation Request
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: User Login
+      parameters:
+      - description: Login User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.LoginUserResponse'
+              type: object
+      summary: Login
+      tags:
+      - User
+  /notification:
+    get:
+      consumes:
+      - application/json
+      description: Get all user notification
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetNotificationResponse'
+      summary: Get All  Notification
+      tags:
+      - Notification
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: User Account Registration
+      parameters:
+      - description: Register User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.CreateUserResponse'
+              type: object
+      summary: Register
+      tags:
+      - User
+  /request:
+    get:
+      consumes:
+      - application/json
+      description: Get all recived donation request
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.GetDonationRequestResponse'
+              type: object
+      summary: Get All Recived Donation Request
+      tags:
+      - Donation Request
+  /request/{donationRequest_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Reject donation request
+      parameters:
+      - description: Donation Request ID
+        in: path
+        name: donationRequest_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      summary: Reject Donation Request
+      tags:
+      - Donation Request
+    post:
+      consumes:
+      - application/json
+      description: Confirm request to claim donation
+      parameters:
+      - description: Donation Request ID
+        in: path
+        name: donationRequest_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      summary: Confirm Donation Request
+      tags:
+      - Donation Request
+  /user/{user_name}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user account
+      parameters:
+      - description: User name
+        in: path
+        name: user_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      summary: Delete User
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update user data
+      parameters:
+      - description: Update User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.EditUserRequest'
+      - description: User Name
+        in: path
+        name: user_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.EditUserResponse'
+              type: object
+      summary: Update User
+      tags:
+      - User
+  /user/{user_name}/ProfilPhoto:
+    put:
+      consumes:
+      - multipart/form-data
+      description: Set user profile photo
+      parameters:
+      - description: Set Profile Photo User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.SetProfilePhotoRequest'
+      - description: Username
+        in: path
+        name: user_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.EditUserResponse'
+              type: object
+      summary: Set Profile Photo
+      tags:
+      - User
+  /user/{userId}:
+    get:
+      consumes:
+      - application/json
+      description: Get user detail
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.GetUserResponse'
+              type: object
+      summary: Get User
+      tags:
+      - User
+swagger: "2.0"

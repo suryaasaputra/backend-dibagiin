@@ -20,6 +20,14 @@ func NewNotificationController(dr repository.INotificationRepository) *notificat
 	}
 }
 
+// Get notification godoc
+// @Summary      Get All  Notification
+// @Description  Get all user notification
+// @Tags         Notification
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  models.GetNotificationResponse
+// @Router       /notification [get]
 func (d notificationController) GetAllByUserId(ctx *gin.Context) {
 	userData := ctx.MustGet("userData").(jwt.MapClaims)
 	userId := fmt.Sprintf("%v", userData["id"])
