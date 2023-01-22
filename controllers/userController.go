@@ -22,6 +22,15 @@ func NewUserController(userRepository repository.IUserRepository) *userControlle
 	}
 }
 
+// Register godoc
+// @Summary      Register
+// @Description  User Account Registration
+// @Param user body models.UserRegisterRequest true "Register User"
+// @Tags         User
+// @Accept       json
+// @Produce      json
+// @Success      201  {object} helpers.Response{data=models.CreateUserResponse}
+// @Router       /register [post]
 func (u userController) Register(ctx *gin.Context) {
 	var registerUser = models.UserRegisterRequest{}
 
@@ -74,6 +83,15 @@ func (u userController) Register(ctx *gin.Context) {
 
 }
 
+// Login godoc
+// @Summary      Login
+// @Description  User Login
+// @Param user body models.UserLoginRequest true "Login User"
+// @Tags         User
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  helpers.Response{data=models.LoginUserResponse}
+// @Router       /login [post]
 func (u userController) Login(ctx *gin.Context) {
 	var request = models.UserLoginRequest{}
 
@@ -135,6 +153,15 @@ func (u userController) Login(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+// GetUser godoc
+// @Summary      Get User
+// @Description  Get user detail
+// @Tags         User
+// @Param        id   path  string  true  "User ID"
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  helpers.Response{data=models.GetUserResponse}
+// @Router       /user/{userId} [get]
 func (u userController) GetUser(ctx *gin.Context) {
 	userNameURL := ctx.Param("userName")
 	userResult := u.UserRepository.GetByUserName(userNameURL)
@@ -147,6 +174,16 @@ func (u userController) GetUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+// Update user godoc
+// @Summary      Update User
+// @Description  Update user data
+// @Param user body models.EditUserRequest true "Update User"
+// @Param        user_name   path  string  true  "User Name"
+// @Tags         User
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  helpers.Response{data=models.EditUserResponse}
+// @Router       /user/{user_name} [put]
 func (u userController) Update(ctx *gin.Context) {
 	userNameURL := ctx.Param("userName")
 	var request = models.EditUserRequest{}
@@ -189,6 +226,16 @@ func (u userController) Update(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+// Set user profile photo godoc
+// @Summary      Set Profile Photo
+// @Description  Set user profile photo
+// @Param user body models.SetProfilePhotoRequest true "Set Profile Photo User"
+// @Param        user_name   path  string  true  "Username"
+// @Tags         User
+// @Accept       mpfd
+// @Produce      json
+// @Success      200  {object}  helpers.Response{data=models.EditUserResponse}
+// @Router       /user/{user_name}/ProfilPhoto [put]
 func (u userController) SetProfilePhoto(ctx *gin.Context) {
 	request := models.SetProfilePhotoRequest{}
 	userData := ctx.MustGet("userData").(jwt.MapClaims)
@@ -245,6 +292,15 @@ func (u userController) CheckUser(ctx *gin.Context) {
 	}
 }
 
+// Delete User
+// @Summary      Delete User
+// @Description  Delete user account
+// @Param        user_name   path  string  true  "User name"
+// @Tags         User
+// @Accept       json
+// @Produce      json
+// @Success      200 {object} helpers.Response
+// @Router       /user/{user_name} [delete]
 func (u userController) Delete(ctx *gin.Context) {
 	userData := ctx.MustGet("userData").(jwt.MapClaims)
 	userID := fmt.Sprintf("%v", userData["id"])

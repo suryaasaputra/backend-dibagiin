@@ -1,9 +1,9 @@
 package helpers
 
 type Response struct {
-	IsError bool        `json:"error"`
-	Code    int         `json:"code"`
-	Message string      `json:"message"`
+	IsError bool        `json:"error" example:"false"`
+	Code    int         `json:"code" example:"200"`
+	Message string      `json:"message" example:"success"`
 	Data    interface{} `json:"data,omitempty"`
 }
 

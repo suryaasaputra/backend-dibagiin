@@ -9,20 +9,20 @@ import (
 	"gorm.io/gorm"
 )
 
-type donationHistoryMiddleware struct {
-	DonationHistoryRepository repository.IDonationHistoryRepository
+type notificationMiddleware struct {
+	NotificationRepository repository.INotificationRepository
 }
 
-func NewDonationHistoryMiddleware(donationHistoryRepository repository.IDonationHistoryRepository) *donationHistoryMiddleware {
-	return &donationHistoryMiddleware{
-		DonationHistoryRepository: donationHistoryRepository,
+func NewNotificationMiddleware(notificationRepository repository.INotificationRepository) *notificationMiddleware {
+	return &notificationMiddleware{
+		NotificationRepository: notificationRepository,
 	}
 }
 
-func (d donationHistoryMiddleware) CheckIfExist() gin.HandlerFunc {
+func (d notificationMiddleware) CheckIfExist() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		donationRequestId := ctx.Param("donationRequestId")
-		result, err := d.DonationHistoryRepository.GetAllByDonationRequestId(donationRequestId)
+		result, err := d.NotificationRepository.GetAllByDonationRequestId(donationRequestId)
 		if err != nil {
 			if err == gorm.ErrRecordNotFound {
 				ctx.Next()

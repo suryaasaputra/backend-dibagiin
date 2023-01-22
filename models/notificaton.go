@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type DonationHistory struct {
+type Notification struct {
 	ID                string           `json:"id" gorm:"primaryKey;type:varchar"`
 	UserID            string           `json:"user_id" gorm:"not null;"`
 	DonationID        string           `json:"donation_id" gorm:"not null;"`
@@ -21,7 +21,7 @@ type DonationHistory struct {
 	UpdatedAt         *time.Time       `json:"updated_at"`
 }
 
-type GetDonationHistoryResponse struct {
+type GetNotificationResponse struct {
 	ID                string     `json:"id" `
 	UserID            string     `json:"user_id"`
 	DonationID        string     `json:"donation_id"`
@@ -75,7 +75,7 @@ type GetDonationHistoryResponse struct {
 	} `json:"donation_request"`
 }
 
-func (d *DonationHistory) BeforeCreate(tx *gorm.DB) error {
+func (d *Notification) BeforeCreate(tx *gorm.DB) error {
 	newId := xid.New().String()
 	d.ID = newId
 	return nil

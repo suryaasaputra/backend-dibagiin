@@ -21,6 +21,15 @@ func NewDonationController(dr repository.IDonationRepository) *donationControlle
 	}
 }
 
+// Create donation godoc
+// @Summary      Create Donation
+// @Description  Create new donation
+// @Param donation body models.CreateDonationRequest true "Donation data"
+// @Tags         Donation
+// @Accept       mpfd
+// @Produce      json
+// @Success      201  {object}  helpers.Response{data=models.CreateDonationResponse}
+// @Router       /donation [post]
 func (d donationController) Create(ctx *gin.Context) {
 	request := models.CreateDonationRequest{}
 	userData := ctx.MustGet("userData").(jwt.MapClaims)
@@ -61,10 +70,19 @@ func (d donationController) Create(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, response)
 }
 
+// Get All donation godoc
+// @Summary      Get All Donation
+// @Description  Get list donation
+// @Param        available   path  bool  false  "availability"
+// @Param        keyword   path  string  false  "keyword"
+// @Tags         Donation
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  helpers.Response{data=[]models.GetDonationsResponse}
+// @Router       /donation [get]
 func (d donationController) GetAll(ctx *gin.Context) {
 	availability := ctx.Query("available")
-	location := ctx.Query("location")
-	title := ctx.Query("title")
+	keyword := ctx.Query("keyword")
 
 	if availability == "true" {
 		result, err := d.DonationRepository.GetAllAvailable()
@@ -75,17 +93,8 @@ func (d donationController) GetAll(ctx *gin.Context) {
 		}
 		response := helpers.GetResponse(false, http.StatusOK, "Berhasil mendapatkan daftar donasi", result)
 		ctx.JSON(http.StatusOK, response)
-	} else if location != "" {
-		result, err := d.DonationRepository.GetAllByLocation(location)
-		if err != nil {
-			response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
-			ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
-			return
-		}
-		response := helpers.GetResponse(false, http.StatusOK, "Berhasil mendapatkan daftar donasi", result)
-		ctx.JSON(http.StatusOK, response)
-	} else if title != "" {
-		result, err := d.DonationRepository.GetAllByKeyword(title)
+	} else if keyword != "" {
+		result, err := d.DonationRepository.GetAllByKeyword(keyword)
 		if err != nil {
 			response := helpers.GetResponse(true, http.StatusInternalServerError, err.Error(), nil)
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, response)
@@ -106,6 +115,15 @@ func (d donationController) GetAll(ctx *gin.Context) {
 
 }
 
+// Get donation detail godoc
+// @Summary      Get Donation Detail
+// @Description  Get donation detail by id
+// @Param        donation_id   path  string  true  "Donation ID"
+// @Tags         Donation
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  helpers.Response{data=models.GetDonationsResponse}
+// @Router       /donation/{donation_id} [get]
 func (d donationController) GetDonationById(ctx *gin.Context) {
 	donationId := ctx.Param("donationId")
 	result, err := d.DonationRepository.GetById(donationId)
@@ -118,6 +136,16 @@ func (d donationController) GetDonationById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+// Edit donation detail godoc
+// @Summary      Edit Donation Detail
+// @Description  Edit donation detail by id
+// @Param        donation body  models.EditDonationRequest  true  "Donation data"
+// @Param        donation_id   path  string  true  "Donation ID"
+// @Tags         Donation
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  helpers.Response{data=models.EditDonationResponse}
+// @Router       /donation/{donation_id} [put]
 func (d donationController) Edit(ctx *gin.Context) {
 	donationId := ctx.Param("donationId")
 	request := models.EditDonationRequest{}
@@ -149,6 +177,15 @@ func (d donationController) Edit(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+// Delete donation  godoc
+// @Summary      Delete Donation
+// @Description  Delete donation  by id
+// @Param        donation_id   path  string  true  "Donation ID"
+// @Tags         Donation
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  helpers.Response
+// @Router       /donation/{donation_id} [delete]
 func (d donationController) Delete(ctx *gin.Context) {
 	donationId := ctx.Param("donationId")
 	err := d.DonationRepository.Delete(donationId)

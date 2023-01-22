@@ -4,14 +4,14 @@ type Middleware struct {
 	UserMiddleware            *userMiddleware
 	DonationMiddleware        *donationMiddleware
 	DonationRequestMiddleware *donationRequestMiddleware
-	DonationHistoryMiddleware *donationHistoryMiddleware
+	NotificationMiddleware    *notificationMiddleware
 }
 
-func NewMiddleware(userMiddleware *userMiddleware, donationMiddleware *donationMiddleware, donationRequestMiddleware *donationRequestMiddleware, donationHistoryMiddleware *donationHistoryMiddleware) Middleware {
+func NewMiddleware(userMiddleware *userMiddleware, donationMiddleware *donationMiddleware, donationRequestMiddleware *donationRequestMiddleware, notificationMiddleware *notificationMiddleware) Middleware {
 	return Middleware{
 		UserMiddleware:            userMiddleware,
 		DonationMiddleware:        donationMiddleware,
 		DonationRequestMiddleware: donationRequestMiddleware,
-		DonationHistoryMiddleware: donationHistoryMiddleware,
+		NotificationMiddleware:    notificationMiddleware,
 	}
 }

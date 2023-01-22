@@ -45,7 +45,7 @@ func (d DonationRequestDb) Create(donationRequest models.DonationRequest) (model
 		return models.CreateDonationRequestResponse{}, err
 	}
 
-	donationHistory := models.DonationHistory{
+	notification := models.Notification{
 		DonationID:        donationId,
 		UserID:            donationModel.UserID,
 		DonationRequestID: donationRequest.ID,
@@ -53,7 +53,7 @@ func (d DonationRequestDb) Create(donationRequest models.DonationRequest) (model
 		Message:           "Meminta barang yang anda donasikan",
 	}
 
-	err = d.db.Create(&donationHistory).Error
+	err = d.db.Create(&notification).Error
 	if err != nil {
 		return models.CreateDonationRequestResponse{}, err
 	}
@@ -276,14 +276,14 @@ func (d DonationRequestDb) Confirm(id string) error {
 	}
 
 	for _, v := range listRejectedRequest {
-		donationHistory := models.DonationHistory{
+		notification := models.Notification{
 			DonationID:        v.DonationID,
 			UserID:            v.UserID,
 			DonationRequestID: id,
 			Type:              "rejectAll",
 			Message:           "donasi telah diberikan ke pengguna lain",
 		}
-		err = d.db.Create(&donationHistory).Error
+		err = d.db.Create(&notification).Error
 		if err != nil {
 			return err
 		}
@@ -297,7 +297,7 @@ func (d DonationRequestDb) Confirm(id string) error {
 		return err
 	}
 
-	donationHistory := models.DonationHistory{
+	notification := models.Notification{
 		DonationID:        donationID,
 		UserID:            donationRequest.UserID,
 		DonationRequestID: donationRequest.ID,
@@ -305,7 +305,7 @@ func (d DonationRequestDb) Confirm(id string) error {
 		Message:           "Permintaan anda telah disetujui",
 	}
 
-	err = d.db.Create(&donationHistory).Error
+	err = d.db.Create(&notification).Error
 	if err != nil {
 		return err
 	}
@@ -326,14 +326,14 @@ func (d DonationRequestDb) Reject(id string) error {
 		return err
 	}
 
-	donationHistory := models.DonationHistory{
+	notification := models.Notification{
 		DonationID:        donationRequest.DonationID,
 		UserID:            donationRequest.UserID,
 		DonationRequestID: donationRequest.ID,
 		Type:              "reject",
 		Message:           "menolak permintaan anda",
 	}
-	err = d.db.Create(&donationHistory).Error
+	err = d.db.Create(&notification).Error
 	if err != nil {
 		return err
 	}
@@ -341,8 +341,8 @@ func (d DonationRequestDb) Reject(id string) error {
 }
 
 func (d DonationRequestDb) Delete(id string) error {
-	DonationHistory := models.DonationHistory{}
-	err := d.db.Where("donation_request_id=?", id).Delete(&DonationHistory).Error
+	Notification := models.Notification{}
+	err := d.db.Where("donation_request_id=?", id).Delete(&Notification).Error
 	if err != nil {
 		return err
 	}

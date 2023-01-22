@@ -21,6 +21,16 @@ func NewDonationRequestController(dr repository.IDonationRequestRepository) *don
 	}
 }
 
+// Send Donation Request godoc
+// @Summary      Send Donation Request
+// @Description  Send request to claim donation
+// @Param        donation_id   path  string  true  "Donation ID"
+// @Param        message  body  models.CreateDonationRequestRequest  true  "Donation request body"
+// @Tags         Donation Request
+// @Accept       json
+// @Produce      json
+// @Success      201  {object}  helpers.Response{data=models.CreateDonationRequestResponse}
+// @Router       /donation/{donation_id}/request [post]
 func (d donationRequestController) Create(ctx *gin.Context) {
 	donationId := ctx.Param("donationId")
 	userData := ctx.MustGet("userData").(jwt.MapClaims)
@@ -61,6 +71,14 @@ func (d donationRequestController) Create(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, response)
 }
 
+// Get All Submitted Donation Request godoc
+// @Summary      Get All Submitted Donation Request
+// @Description  Get all submitted donation request
+// @Tags         Donation Request
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  helpers.Response{data=models.GetDonationRequestResponse}
+// @Router       /donation/request [get]
 func (d donationRequestController) GetAllByUserId(ctx *gin.Context) {
 	userData := ctx.MustGet("userData").(jwt.MapClaims)
 	userId := fmt.Sprintf("%v", userData["id"])
@@ -74,6 +92,14 @@ func (d donationRequestController) GetAllByUserId(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+// Get All Recived Donation Request godoc
+// @Summary      Get All Recived Donation Request
+// @Description  Get all recived donation request
+// @Tags         Donation Request
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  helpers.Response{data=models.GetDonationRequestResponse}
+// @Router       /request [get]
 func (d donationRequestController) GetAllByDonatorId(ctx *gin.Context) {
 	userData := ctx.MustGet("userData").(jwt.MapClaims)
 	userId := fmt.Sprintf("%v", userData["id"])
@@ -112,6 +138,15 @@ func (d donationRequestController) GetById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+// Confirm Donation Request godoc
+// @Summary      Confirm Donation Request
+// @Description  Confirm request to claim donation
+// @Param        donationRequest_id   path  string  true  "Donation Request ID"
+// @Tags         Donation Request
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  helpers.Response
+// @Router       /request/{donationRequest_id} [post]
 func (d donationRequestController) Confirm(ctx *gin.Context) {
 	id := ctx.Param("donationRequestId")
 
@@ -124,6 +159,16 @@ func (d donationRequestController) Confirm(ctx *gin.Context) {
 	response := helpers.GetResponse(false, http.StatusOK, "Konfirmasi permintaan berhasil", nil)
 	ctx.JSON(http.StatusOK, response)
 }
+
+// Reject Donation Request godoc
+// @Summary      Reject Donation Request
+// @Description  Reject donation request
+// @Param        donationRequest_id   path  string  true  "Donation Request ID"
+// @Tags         Donation Request
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  helpers.Response
+// @Router       /request/{donationRequest_id} [delete]
 func (d donationRequestController) Reject(ctx *gin.Context) {
 	id := ctx.Param("donationRequestId")
 
@@ -137,6 +182,15 @@ func (d donationRequestController) Reject(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
+// Cancel Send Donation Request godoc
+// @Summary      Cancel Send Donation Request
+// @Description  Cancel Send donation request
+// @Param        donationRequest_id   path  string  true  "Donation Request ID"
+// @Tags         Donation Request
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  helpers.Response
+// @Router       /donation/request/{donationRequest_id} [delete]
 func (d donationRequestController) Delete(ctx *gin.Context) {
 	id := ctx.Param("requestId")
 

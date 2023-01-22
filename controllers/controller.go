@@ -10,15 +10,15 @@ type Controller struct {
 	UserController            *userController
 	DonationController        *donationController
 	DonationRequestController *donationRequestController
-	DonationHistoryController *donationHistoryController
+	NotificationController    *notificationController
 }
 
-func NewController(userController *userController, donationController *donationController, dondonationRequestController *donationRequestController, donationHistoryController *donationHistoryController) Controller {
+func NewController(userController *userController, donationController *donationController, dondonationRequestController *donationRequestController, notificationController *notificationController) Controller {
 	return Controller{
 		UserController:            userController,
 		DonationController:        donationController,
 		DonationRequestController: dondonationRequestController,
-		DonationHistoryController: donationHistoryController,
+		NotificationController:    notificationController,
 	}
 }
 

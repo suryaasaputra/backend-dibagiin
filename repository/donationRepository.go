@@ -150,6 +150,7 @@ func (d DonationDb) GetAllByLocation(location string) ([]models.GetDonationsResp
 
 	return donationList, nil
 }
+
 func (d DonationDb) GetAllByKeyword(keyword string) ([]models.GetDonationsResponse, error) {
 	donations := []models.Donation{}
 	lowerKeyword := strings.ToLower(keyword)
