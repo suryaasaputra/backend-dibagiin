@@ -50,7 +50,7 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 	r.Use(cors.New(config))
 	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.GET("/", ctl.HomeController)
-	// r.GET("/.well-known/pki-validation", ctl.HomeController)
+	r.StaticFile("/.well-known/pki-validation/81AC4BA8E23D1BB7D3614DF742DF1D42.txt", "./81AC4BA8E23D1BB7D3614DF742DF1D42.txt")
 
 	//manual login
 	r.POST("/register", ctl.UserController.Register)
