@@ -146,6 +146,7 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 	rTLS := gin.Default()
 
 	rTLS.Use(cors.New(config))
+	rTLS.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	rTLS.GET("/", ctl.HomeController)
 	rTLS.POST("/register", ctl.UserController.Register)
 	rTLS.POST("/login", ctl.UserController.Login)

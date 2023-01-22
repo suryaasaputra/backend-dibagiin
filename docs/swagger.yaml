@@ -17,6 +17,7 @@ definitions:
   models.CreateDonationRequestRequest:
     properties:
       message:
+        example: Minta bang
         type: string
     type: object
   models.CreateDonationRequestResponse:
