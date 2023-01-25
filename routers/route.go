@@ -37,7 +37,7 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 	docs.SwaggerInfo.Title = "Dibagiin API"
 	docs.SwaggerInfo.Description = "RESTful API for Dibagiin"
 	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = "165.232.175.90"
+	docs.SwaggerInfo.Host = "backend-dibagiin-edmebdkc2a-et.a.run.app"
 	// docs.SwaggerInfo.Host = "localhost:8080"
 	docs.SwaggerInfo.BasePath = "/"
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
