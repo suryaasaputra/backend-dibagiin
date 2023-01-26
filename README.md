@@ -450,7 +450,7 @@ All API must use this authentication
 
 **Request** :
 - Method : GET
-- Endpoint : `/donation/request`
+- Endpoint : `/request`
 - Header :
     - Accept: application/json
 
