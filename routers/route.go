@@ -140,97 +140,97 @@ func StartServer(ctl controllers.Controller, mdl middlewares.Middleware) error {
 		PORT = "8080"
 	}
 
-	go r.Run(":" + PORT)
-	// return r.Run(":" + PORT)
+	// go r.Run(":" + PORT)
+	return r.Run(":" + PORT)
 
-	rTLS := gin.Default()
+	// rTLS := gin.Default()
 
-	rTLS.Use(cors.New(config))
-	rTLS.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	rTLS.GET("/", ctl.HomeController)
-	rTLS.POST("/register", ctl.UserController.Register)
-	rTLS.POST("/login", ctl.UserController.Login)
+	// rTLS.Use(cors.New(config))
+	// rTLS.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// rTLS.GET("/", ctl.HomeController)
+	// rTLS.POST("/register", ctl.UserController.Register)
+	// rTLS.POST("/login", ctl.UserController.Login)
 
-	userRouter2 := rTLS.Group("/user")
-	{
-		//check username or email exist
-		userRouter2.GET("", ctl.UserController.CheckUser)
+	// userRouter2 := rTLS.Group("/user")
+	// {
+	// 	//check username or email exist
+	// 	userRouter2.GET("", ctl.UserController.CheckUser)
 
-		// Token authentication
-		userRouter2.Use(mdl.UserMiddleware.Authentication())
-		// get one user data
-		userRouter2.GET("/:userName", ctl.UserController.GetUser)
+	// 	// Token authentication
+	// 	userRouter2.Use(mdl.UserMiddleware.Authentication())
+	// 	// get one user data
+	// 	userRouter2.GET("/:userName", ctl.UserController.GetUser)
 
-		// check user have access or not
-		userRouter2.Use(mdl.UserMiddleware.Authorization())
+	// 	// check user have access or not
+	// 	userRouter2.Use(mdl.UserMiddleware.Authorization())
 
-		//set user profil picture
-		userRouter2.PUT("/:userName/ProfilPhoto", ctl.UserController.SetProfilePhoto)
+	// 	//set user profil picture
+	// 	userRouter2.PUT("/:userName/ProfilPhoto", ctl.UserController.SetProfilePhoto)
 
-		//edit user data
-		userRouter2.PUT("/:userName", ctl.UserController.Update)
+	// 	//edit user data
+	// 	userRouter2.PUT("/:userName", ctl.UserController.Update)
 
-		//delete user account
-		userRouter2.DELETE("/:userName", ctl.UserController.Delete)
-	}
-	donationRouter2 := rTLS.Group("/donation")
-	{
+	// 	//delete user account
+	// 	userRouter2.DELETE("/:userName", ctl.UserController.Delete)
+	// }
+	// donationRouter2 := rTLS.Group("/donation")
+	// {
 
-		// Token authentication
-		donationRouter2.Use(mdl.UserMiddleware.Authentication())
+	// 	// Token authentication
+	// 	donationRouter2.Use(mdl.UserMiddleware.Authentication())
 
-		// create a new donation
-		donationRouter2.POST("", ctl.DonationController.Create)
+	// 	// create a new donation
+	// 	donationRouter2.POST("", ctl.DonationController.Create)
 
-		// get all donation
-		donationRouter2.GET("", ctl.DonationController.GetAll)
+	// 	// get all donation
+	// 	donationRouter2.GET("", ctl.DonationController.GetAll)
 
-		// get one donation by id
-		donationRouter2.GET("/:donationId", ctl.DonationController.GetDonationById)
+	// 	// get one donation by id
+	// 	donationRouter2.GET("/:donationId", ctl.DonationController.GetDonationById)
 
-		// send request to claim a donation from another user
-		donationRouter2.POST("/:donationId/request", mdl.DonationMiddleware.CheckDonator(), mdl.DonationRequestMiddleware.CheckIfExist(), ctl.DonationRequestController.Create)
+	// 	// send request to claim a donation from another user
+	// 	donationRouter2.POST("/:donationId/request", mdl.DonationMiddleware.CheckDonator(), mdl.DonationRequestMiddleware.CheckIfExist(), ctl.DonationRequestController.Create)
 
-		//get all request in donation
-		donationRouter2.GET("/:donationId/request", ctl.DonationRequestController.GetAllByDonationId)
+	// 	//get all request in donation
+	// 	donationRouter2.GET("/:donationId/request", ctl.DonationRequestController.GetAllByDonationId)
 
-		// get user submitted request
-		donationRouter2.GET("/request", ctl.DonationRequestController.GetAllByUserId)
+	// 	// get user submitted request
+	// 	donationRouter2.GET("/request", ctl.DonationRequestController.GetAllByUserId)
 
-		// get one donation request
-		donationRouter2.GET("/request/:donationRequestId", ctl.DonationRequestController.GetById)
+	// 	// get one donation request
+	// 	donationRouter2.GET("/request/:donationRequestId", ctl.DonationRequestController.GetById)
 
-		// cancel request
-		donationRouter2.DELETE("/request/:requestId", ctl.DonationRequestController.Delete)
+	// 	// cancel request
+	// 	donationRouter2.DELETE("/request/:requestId", ctl.DonationRequestController.Delete)
 
-		// donation authorization
-		donationRouter2.Use(mdl.DonationMiddleware.Authorization())
-		// edit donation data
-		donationRouter2.PUT("/:donationId", ctl.DonationController.Edit)
+	// 	// donation authorization
+	// 	donationRouter2.Use(mdl.DonationMiddleware.Authorization())
+	// 	// edit donation data
+	// 	donationRouter2.PUT("/:donationId", ctl.DonationController.Edit)
 
-		// delete donation
-		donationRouter2.DELETE("/:donationId", ctl.DonationController.Delete)
+	// 	// delete donation
+	// 	donationRouter2.DELETE("/:donationId", ctl.DonationController.Delete)
 
-	}
+	// }
 
-	requestRouter2 := rTLS.Group("/request")
-	{
-		requestRouter2.Use(mdl.UserMiddleware.Authentication())
-		// get all donation request
-		requestRouter2.GET("", ctl.DonationRequestController.GetAllByDonatorId)
-		// confirm a request
-		requestRouter2.POST("/:donationRequestId", mdl.DonationRequestMiddleware.Authorization(), mdl.NotificationMiddleware.CheckIfExist(), ctl.DonationRequestController.Confirm)
-		// reject a request
-		requestRouter2.DELETE("/:donationRequestId", mdl.DonationRequestMiddleware.Authorization(), mdl.NotificationMiddleware.CheckIfExist(), ctl.DonationRequestController.Reject)
-	}
-	notificationRouter2 := rTLS.Group("/notification")
-	{
-		notificationRouter2.Use(mdl.UserMiddleware.Authentication())
-		// get notification
-		notificationRouter2.GET("", ctl.NotificationController.GetAllByUserId)
-	}
+	// requestRouter2 := rTLS.Group("/request")
+	// {
+	// 	requestRouter2.Use(mdl.UserMiddleware.Authentication())
+	// 	// get all donation request
+	// 	requestRouter2.GET("", ctl.DonationRequestController.GetAllByDonatorId)
+	// 	// confirm a request
+	// 	requestRouter2.POST("/:donationRequestId", mdl.DonationRequestMiddleware.Authorization(), mdl.NotificationMiddleware.CheckIfExist(), ctl.DonationRequestController.Confirm)
+	// 	// reject a request
+	// 	requestRouter2.DELETE("/:donationRequestId", mdl.DonationRequestMiddleware.Authorization(), mdl.NotificationMiddleware.CheckIfExist(), ctl.DonationRequestController.Reject)
+	// }
+	// notificationRouter2 := rTLS.Group("/notification")
+	// {
+	// 	notificationRouter2.Use(mdl.UserMiddleware.Authentication())
+	// 	// get notification
+	// 	notificationRouter2.GET("", ctl.NotificationController.GetAllByUserId)
+	// }
 
-	// return
-	return rTLS.RunTLS(":443", "./cert/certificate.crt", "./cert/private.key")
+	// // return
+	// return rTLS.RunTLS(":443", "./cert/certificate.crt", "./cert/private.key")
 
 }
